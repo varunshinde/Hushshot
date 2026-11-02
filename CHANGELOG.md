@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- `pnpm zip` now runs the full production build, including the remote-URL strip step, before zipping. WXT's own zip command skipped that step.
+- README: install from a GitHub release zip, with an optional checksum check.
+
 ## 0.1.1 (2026-11-01)
 
 - Renamed the extension to **LocalFullPageCapture** to match the GitHub repository. This covers the name in Chrome, page titles, the popup and settings, the PDF "Producer"/"Creator" fields and the default download folder (`Downloads/LocalFullPageCapture`). If you saved settings before, your chosen download folder is kept.

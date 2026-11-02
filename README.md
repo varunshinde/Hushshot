@@ -58,7 +58,19 @@ Switch to **Select text** and drag a box. This chart is a `<canvas>`, so its lab
 
 ## Install
 
-LocalFullPageCapture isn't on the Chrome Web Store. You build it once and load it as an unpacked extension.
+LocalFullPageCapture isn't on the Chrome Web Store. You load it into Chrome as an unpacked extension, either from a ready-made zip or by building it yourself.
+
+### Option 1: download a release (easiest)
+
+1. Download `LocalFullPageCapture-v….zip` from the [latest release](https://github.com/varunshinde/LocalFullPageCapture/releases/latest) and unzip it.
+2. Optional: check the download. Run `shasum -a 256` on the zip and compare the result with the SHA-256 in the release notes.
+3. Open `chrome://extensions` and turn on **Developer mode** (top right).
+4. Click **Load unpacked** and choose the unzipped folder.
+5. Click the puzzle-piece icon in the toolbar and pin **LocalFullPageCapture**.
+
+Keep the unzipped folder where it is; Chrome loads the extension from it. To update, download the new release, replace the folder's contents and click the reload arrow on the extension's card.
+
+### Option 2: build from source
 
 **You need:** Google Chrome 120+, [Node.js](https://nodejs.org) 20+ and pnpm 10.
 
@@ -146,6 +158,7 @@ pnpm docs:screenshots
 - `pnpm test:e2e` builds a test variant (`dist/chrome-mv3-e2e`) and runs Playwright against your installed **Google Chrome** with the extension loaded. That variant adds `<all_urls>` and makes `debugger` required, because automation can't click the toolbar or accept permission prompts. Don't load it for everyday use.
 - The E2E tests run Chrome headful with its window placed off-screen. Set `E2E_HEADLESS=1` to run headless where your setup allows it.
 - `pnpm docs:screenshots` regenerates the README images in `docs/images`.
+- `pnpm zip` builds the production extension (including the step that strips remote URLs) and zips it to `dist/LocalFullPageCapture-v<version>.zip`, ready to attach to a GitHub release.
 
 <details>
 <summary><b>Project layout</b></summary>
