@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.3 (2026-11-01)
 
 - **Fixed: PDF pages with a different width.** With Orientation "Auto", each page chose portrait or landscape from its own slice, so the short last page of a long capture flipped to landscape and was drawn at a different width. All pages now share one layout (paper, orientation, scale) taken from the whole capture.
 - **Fixed: uneven empty space at the bottom of PDF pages.** Page breaks used to land anywhere in the bottom 15% of a page. PDF pages are now filled to the bottom: the break goes in the nearest gap between text lines above the page edge, so at most about one line is left empty. A figure is moved whole to the next page only if that leaves at most 10% of the page empty; otherwise the break goes through the figure at the page edge. Where no clean gap exists (dense multi-column text), the break crosses the fewest lines.
