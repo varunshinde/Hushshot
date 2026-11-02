@@ -1,0 +1,45 @@
+{
+  "name": "localcapture",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Private, offline screenshot and screen-capture Chrome extension",
+  "type": "module",
+  "packageManager": "pnpm@10.34.9",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build && node scripts/strip-remote-urls.mjs dist/chrome-mv3",
+    "build:e2e": "wxt build --mode e2e && node scripts/strip-remote-urls.mjs dist/chrome-mv3-e2e",
+    "zip": "wxt zip",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "pnpm build:e2e && playwright test",
+    "postinstall": "wxt prepare",
+    "docs:screenshots": "pnpm build:e2e && DOCS=1 playwright test docs"
+  },
+  "dependencies": {
+    "@tesseract.js-data/eng": "1.0.0",
+    "fflate": "0.8.2",
+    "pdf-lib": "1.17.1",
+    "preact": "10.29.7",
+    "tesseract.js": "7.0.0",
+    "tesseract.js-core": "7.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@preact/preset-vite": "2.10.6",
+    "@types/chrome": "0.1.43",
+    "@types/node": "24.10.1",
+    "@types/pngjs": "6.0.5",
+    "pdfjs-dist": "6.4.299",
+    "pngjs": "7.0.0",
+    "typescript": "5.9.3",
+    "vite": "7.3.5",
+    "vitest": "4.1.11",
+    "wxt": "0.21.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

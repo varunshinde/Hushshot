@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lazy images fixture</title>
+<style>
+  html, body { margin: 0; font: 16px/1.5 Helvetica, Arial, sans-serif; }
+  main { padding: 20px 40px; }
+  .item { height: 700px; }
+  img { display: block; width: 400px; height: 300px; background: #999; }
+</style>
+</head>
+<body>
+<main id="list"></main>
+<script>
+  const list = document.getElementById('list');
+  for (let i = 0; i < 24; i++) {
+    const d = document.createElement('div');
+    d.className = 'item';
+    const img = document.createElement('img');
+    img.alt = `image ${i}`;
+    img.dataset.index = i;
+    if (i % 3 === 2) {
+      // Script-driven lazy loading (IntersectionObserver), as many sites do.
+      img.dataset.src = `/img/${i}.png?delay=200`;
+    } else {
+      img.loading = 'lazy';
+      img.src = `/img/${i}.png?delay=200`;
+    }
+    d.append(`Item ${i}`, img);
+    list.appendChild(d);
+  }
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting && e.target.dataset.src) { e.target.src = e.target.dataset.src; delete e.target.dataset.src; io.unobserve(e.target); }
+  });
+  document.querySelectorAll('img[data-src]').forEach((i) => io.observe(i));
+</script>
+</body>
+</html>

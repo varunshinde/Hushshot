@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCR fixture</title>
+<style>
+  html, body { margin: 0; font: 16px/1.5 Helvetica, Arial, sans-serif; }
+  main { padding: 24px 40px; }
+  #shot { display: block; border: 1px solid #ccc; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Screenshot with text</h1>
+  <p>The image below contains text that only image OCR can read.</p>
+  <img id="shot" alt="" src="generated/ocr-text.png">
+</main>
+<script>
+  // The image is rendered at 2x; show it at its CSS size so a 2x capture is pixel-exact.
+  const img = document.getElementById('shot');
+  const fit = () => { img.style.width = img.naturalWidth / 2 + 'px'; };
+  if (img.complete && img.naturalWidth) fit(); else img.addEventListener('load', fit);
+</script>
+</body>
+</html>

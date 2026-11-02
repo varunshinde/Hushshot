@@ -1,0 +1,13 @@
+main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 20px; margin: 0 0 4px; }
+h2 { font-size: 14px; margin: 0 0 12px; }
+section { border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+.field { display: grid; grid-template-columns: 220px 1fr; gap: 4px 12px; align-items: center; color: var(--fg); font-size: 13px; }
+.field .name { color: var(--fg); }
+.field .help { grid-column: 2; color: var(--fg-3); font-size: 12px; }
+.field > :not(.name):not(.help) { grid-column: 2; }
+textarea { font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; width: 100%; }
+.langs { display: flex; gap: 12px; }
+label.button { display: inline-flex; align-items: center; border: 1px solid var(--border); background: var(--bg-2); border-radius: 6px; padding: 6px 10px; cursor: pointer; color: var(--fg); font-size: 13px; }
+code { font-size: 12px; }
+@media (max-width: 600px) { .field { grid-template-columns: 1fr; } .field .help, .field > :not(.name):not(.help) { grid-column: 1; } }

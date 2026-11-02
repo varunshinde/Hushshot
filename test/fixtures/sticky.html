@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sticky and fixed fixture</title>
+<style>
+  html, body { margin: 0; background: #fff; font: 17px/1.6 Helvetica, Arial, sans-serif; }
+  header { position: sticky; top: 0; height: 60px; background: rgb(200, 30, 30); color: #fff; display: flex; align-items: center; padding: 0 60px; z-index: 5; }
+  #page { position: relative; height: 6000px; }
+  main { margin-left: 40px; padding: 20px; max-width: 800px; }
+  #chat { position: fixed; right: 16px; bottom: 16px; width: 80px; height: 80px; border-radius: 12px; background: rgb(30, 160, 90); z-index: 10; }
+</style>
+<script src="ruler.js"></script>
+</head>
+<body>
+<header>Sticky site header</header>
+<div id="page"><main id="content"></main></div>
+<div id="chat" aria-label="Chat widget"></div>
+<script>
+  drawRuler(document.getElementById('page'), 6000);
+  const s = prose(3), main = document.getElementById('content');
+  for (let i = 0; i < 60; i++) { const p = document.createElement('p'); p.textContent = s(25); main.appendChild(p); }
+</script>
+</body>
+</html>

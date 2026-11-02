@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Inner scroll container fixture</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; font: 15px/1.5 Helvetica, Arial, sans-serif; }
+  body { display: flex; flex-direction: column; }
+  .top { height: 50px; flex: none; background: #263238; color: #fff; display: flex; align-items: center; padding: 0 16px; }
+  .app { flex: 1; display: flex; min-height: 0; }
+  aside { width: 220px; flex: none; background: #eceff1; padding: 12px; }
+  #scroller { flex: 1; overflow: auto; }
+  #inner { position: relative; height: 9000px; }
+  #inner article { margin-left: 30px; padding: 16px; max-width: 760px; }
+</style>
+<script src="ruler.js"></script>
+</head>
+<body>
+<div class="top">Mail app</div>
+<div class="app">
+  <aside>Inbox<br>Sent<br>Drafts</aside>
+  <div id="scroller"><div id="inner"><article id="msgs"></article></div></div>
+</div>
+<script>
+  drawRuler(document.getElementById('inner'), 9000);
+  const s = prose(11), a = document.getElementById('msgs');
+  for (let i = 0; i < 90; i++) { const p = document.createElement('p'); p.textContent = `Message ${i + 1}. ` + s(20); a.appendChild(p); }
+</script>
+</body>
+</html>

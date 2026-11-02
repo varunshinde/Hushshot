@@ -1,0 +1,13 @@
+{
+  "extends": "./.wxt/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
+    "noImplicitOverride": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": ["chrome", "node"],
+    "skipLibCheck": true
+  },
+  "include": ["src", "test", "wxt.config.ts", "vitest.config.ts", "playwright.config.ts"]
+}

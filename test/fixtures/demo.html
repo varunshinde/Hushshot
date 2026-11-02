@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>A Weekend on the Coast Trail · Trailhead Journal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --ink: #1d2a32; --muted: #5b6b75; --line: #e3e8eb; --accent: #127a6a; --sand: #f6f1e8; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; color: var(--ink); font: 18px/1.65 Georgia, 'Times New Roman', serif; }
+  header { position: sticky; top: 0; z-index: 5; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--line); font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+  header .bar { max-width: 1100px; margin: 0 auto; height: 64px; display: flex; align-items: center; gap: 32px; padding: 0 32px; }
+  header .logo { font-weight: 700; font-size: 20px; letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; }
+  header .logo i { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display: inline-block; }
+  header nav { display: flex; gap: 24px; font-size: 15px; color: var(--muted); }
+  header .cta { margin-left: auto; font-size: 14px; background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 8px; }
+  .hero { max-width: 1100px; margin: 0 auto; padding: 48px 32px 0; }
+  .kicker { font: 600 14px/1 -apple-system, 'Helvetica Neue', Arial, sans-serif; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
+  h1 { font-size: 52px; line-height: 1.1; margin: 14px 0 12px; letter-spacing: -.02em; max-width: 820px; }
+  .dek { font-size: 22px; color: var(--muted); max-width: 760px; margin: 0 0 22px; }
+  .byline { font: 15px/1.4 -apple-system, 'Helvetica Neue', Arial, sans-serif; color: var(--muted); margin-bottom: 28px; }
+  .art { width: 100%; height: auto; display: block; border-radius: 14px; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 32px 80px; }
+  h2 { font: 700 30px/1.25 -apple-system, 'Helvetica Neue', Arial, sans-serif; letter-spacing: -.01em; margin: 52px 0 10px; }
+  h3 { font: 600 21px/1.3 -apple-system, 'Helvetica Neue', Arial, sans-serif; margin: 30px 0 6px; }
+  blockquote { margin: 30px 0; padding: 4px 0 4px 22px; border-left: 4px solid var(--accent); font-size: 22px; font-style: italic; color: #33454f; }
+  table { width: 100%; border-collapse: collapse; font: 16px/1.5 -apple-system, 'Helvetica Neue', Arial, sans-serif; margin: 18px 0; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: .04em; }
+  .card { background: var(--sand); border-radius: 12px; padding: 20px 24px; margin: 28px 0; font: 16px/1.6 -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+  .card strong { display: block; font-size: 17px; margin-bottom: 4px; }
+  figure { margin: 30px 0; }
+  figcaption { font: 14px/1.5 -apple-system, 'Helvetica Neue', Arial, sans-serif; color: var(--muted); margin-top: 8px; }
+  canvas { width: 100%; border: 1px solid var(--line); border-radius: 10px; display: block; }
+  footer { border-top: 1px solid var(--line); padding: 40px 32px; text-align: center; font: 14px/1.5 -apple-system, 'Helvetica Neue', Arial, sans-serif; color: var(--muted); }
+  .cookie { position: fixed; left: 24px; bottom: 24px; width: 360px; z-index: 20; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; box-shadow: 0 10px 30px rgba(0,0,0,.12); font: 14px/1.5 -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+  .cookie b { display: block; margin-bottom: 4px; }
+  .cookie .btns { display: flex; gap: 8px; margin-top: 10px; }
+  .cookie span { padding: 6px 12px; border-radius: 7px; border: 1px solid var(--line); }
+  .cookie span.ok { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chat { position: fixed; right: 24px; bottom: 24px; z-index: 20; width: 58px; height: 58px; border-radius: 50%; background: var(--accent); box-shadow: 0 8px 20px rgba(0,0,0,.18); }
+  .chat::after { content: ''; position: absolute; left: 17px; top: 18px; width: 24px; height: 18px; border-radius: 6px; background: #fff; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="logo"><i></i>Trailhead</div>
+    <nav><span>Guides</span><span>Gear</span><span>Maps</span><span>Journal</span></nav>
+    <span class="cta">Subscribe</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="kicker">Field guide</div>
+  <h1>A Weekend on the Coast Trail</h1>
+  <p class="dek">Two days, 28 kilometres, three beaches and one very windy headland. Everything you need to plan an easy coastal hike.</p>
+  <div class="byline">By the Trailhead editors · 9 min read</div>
+  <svg class="art" viewBox="0 0 1100 420" role="img" aria-label="Illustration of hills above the sea at sunset">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd8a8"/><stop offset=".6" stop-color="#ffb38a"/><stop offset="1" stop-color="#f7a072"/></linearGradient>
+      <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d8fa3"/><stop offset="1" stop-color="#1f5d73"/></linearGradient>
+    </defs>
+    <rect width="1100" height="420" fill="url(#sky)"/>
+    <circle cx="780" cy="210" r="70" fill="#fff3d6"/>
+    <rect y="250" width="1100" height="170" fill="url(#sea)"/>
+    <path d="M0 260 C 160 150 300 170 420 230 S 640 300 760 250 L 760 420 L 0 420 Z" fill="#2f6b4f"/>
+    <path d="M0 330 C 200 260 380 300 520 340 L 520 420 L 0 420 Z" fill="#245a41"/>
+    <path d="M820 300 C 900 250 1000 240 1100 270 L 1100 420 L 820 420 Z" fill="#3a7a58"/>
+    <path d="M60 300 q 30 -60 60 0 z M140 290 q 26 -54 52 0 z M210 300 q 24 -50 48 0 z" fill="#1c4532"/>
+    <path d="M440 300 q 60 -8 120 0 M600 320 q 50 -6 100 0 M480 350 q 70 -8 140 0" stroke="#bfe3ea" stroke-width="3" fill="none" opacity=".7"/>
+  </svg>
+</section>
+
+<main id="content">
+  <p>The Coast Trail is the kind of walk that makes a weekend feel twice as long. It follows the cliffs for most of its length, drops to the sand three times, and finishes at a small harbour town with good coffee and a bus back to the start. You don't need much experience, but you do need to plan around the tides.</p>
+  <p>This guide covers the route in two days, with a night at the halfway campground. If you'd rather stay indoors, there are a handful of guesthouses in the village at kilometre 15.</p>
+
+  <h2>The route at a glance</h2>
+  <table>
+    <thead><tr><th>Section</th><th>Distance</th><th>Climb</th><th>Time</th></tr></thead>
+    <tbody>
+      <tr><td>North beach to Lookout Point</td><td>6.5 km</td><td>240 m</td><td>2 h</td></tr>
+      <tr><td>Lookout Point to Cove Camp</td><td>8.0 km</td><td>310 m</td><td>2 h 45</td></tr>
+      <tr><td>Cove Camp to the Headland</td><td>7.5 km</td><td>420 m</td><td>3 h</td></tr>
+      <tr><td>The Headland to Harbour Town</td><td>6.0 km</td><td>150 m</td><td>1 h 45</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card"><strong>Check the tide table</strong>The beach crossing after Lookout Point is only passable within two hours of low tide. Plan your start time around it, not the other way round.</div>
+
+  <h2>Day one: beaches and the lookout</h2>
+  <p>Start early from the north beach car park. The first hour is flat and sandy, then the path climbs steadily through coastal heath to Lookout Point, where the whole route unfolds to the south. On a clear day you can see the headland you'll be crossing tomorrow.</p>
+  <p>After the lookout, the trail drops back to the shore for the tidal crossing. Rock pools here are full of anemones and small crabs, so leave time to wander. The final stretch to Cove Camp is shaded and gentle, a welcome end to the day.</p>
+
+  <h3>Where to sleep</h3>
+  <p>Cove Camp has twelve tent sites, a water tap and a composting toilet. Sites can't be booked, so arrive by mid-afternoon in summer. The beach below the camp is sheltered and good for a sunset swim.</p>
+
+  <blockquote>The best part of the trail is the hour before sunset at Cove Camp, when the wind drops and the whole bay turns gold.</blockquote>
+
+  <h2>Day two: over the headland</h2>
+  <p>The second day is shorter but steeper. The climb to the headland starts right out of camp and gains most of its height in the first three kilometres. Take it slowly: the views back along the coast are the best of the trip, and there are benches at the two main switchbacks.</p>
+  <p>From the top, the path follows the ridge before descending through farmland to Harbour Town. The last kilometre runs along the sea wall, past the fishing boats and straight to the bakery.</p>
+
+  <figure>
+    <canvas id="profile" width="1312" height="520" aria-label="Elevation profile chart"></canvas>
+    <figcaption>Elevation profile for the full route. The headland on day two is the high point at 212 m.</figcaption>
+  </figure>
+
+  <h2>What to pack</h2>
+  <ul>
+    <li>Sturdy shoes with good grip for the wet rocks on the tidal crossing</li>
+    <li>A wind layer, even in summer; the headland is always breezy</li>
+    <li>Two litres of water per person, refilled at Cove Camp</li>
+    <li>Sun protection and a hat, since most of the trail has no shade</li>
+    <li>A printed copy of the tide table and the route map</li>
+  </ul>
+
+  <h2>Getting there and back</h2>
+  <p>A weekend bus runs from Harbour Town to the north beach twice each morning, which means you can park at the finish and ride to the start. Outside the summer season, the bus only runs on Saturdays, so check the timetable before you go.</p>
+  <p>If you're driving, the north beach car park fills quickly on sunny weekends. Arrive before nine, or use the overflow field a few hundred metres up the road.</p>
+
+  <h2>Good to know</h2>
+  <p>Dogs are welcome on a lead, except on the beaches between May and September when shorebirds are nesting. Fires aren't allowed anywhere on the trail. Mobile reception is patchy between Lookout Point and the headland, so tell someone your plans before you set off.</p>
+  <p>Above all, take your time. The trail isn't long, and the slow moments, like a rock pool, a bench at the top of a climb or a swim at the end of the day, are what make it worth walking.</p>
+</main>
+
+<footer>Trailhead Journal · Field guides for easy weekends outdoors</footer>
+
+<div class="cookie" id="cookie-banner"><b>We use cookies</b>We use cookies to remember your preferences and measure how the guides are used.<div class="btns"><span class="ok">Accept</span><span>Settings</span></div></div>
+<div class="chat chat-widget" id="chat-widget" aria-label="Chat"></div>
+
+<script>
+  // Elevation profile drawn on a canvas, so its text is only readable through OCR.
+  const c = document.getElementById('profile'), g = c.getContext('2d');
+  const W = c.width, H = c.height, L = 110, R = 40, T = 70, B = 80;
+  const pts = [[0,8],[2,30],[4,88],[6.5,146],[8,60],[10,24],[12,70],[14.5,40],[16,92],[18,170],[19,212],[21,150],[24,70],[26,30],[28,6]];
+  const x = (k) => L + (k / 28) * (W - L - R), y = (m) => H - B - (m / 240) * (H - T - B);
+  g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#1d2a32'; g.font = '600 34px -apple-system, Helvetica Neue, Arial, sans-serif';
+  g.fillText('Elevation profile (metres)', L, 46);
+  g.font = '26px -apple-system, Helvetica Neue, Arial, sans-serif'; g.fillStyle = '#5b6b75';
+  g.strokeStyle = '#e3e8eb'; g.lineWidth = 2;
+  for (const m of [0, 100, 200]) { g.beginPath(); g.moveTo(L, y(m)); g.lineTo(W - R, y(m)); g.stroke(); g.fillText(String(m), L - 70, y(m) + 9); }
+  for (const k of [0, 7, 14, 21, 28]) g.fillText(k + ' km', x(k) - 24, H - 34);
+  g.beginPath(); g.moveTo(x(0), y(0));
+  for (const [k, m] of pts) g.lineTo(x(k), y(m));
+  g.lineTo(x(28), y(0)); g.closePath(); g.fillStyle = 'rgba(18,122,106,.18)'; g.fill();
+  g.beginPath(); pts.forEach(([k, m], i) => (i ? g.lineTo(x(k), y(m)) : g.moveTo(x(k), y(m))));
+  g.strokeStyle = '#127a6a'; g.lineWidth = 5; g.stroke();
+  g.fillStyle = '#1d2a32'; g.font = '600 26px -apple-system, Helvetica Neue, Arial, sans-serif';
+  g.fillText('Headland 212 m', x(19) - 90, y(212) - 18);
+  g.fillText('Cove Camp', x(14.5) - 64, y(40) + 46);
+</script>
+</body>
+</html>
