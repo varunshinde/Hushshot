@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Fixed: a click in the popup sometimes did nothing, so you had to click twice.** When Chrome had put the extension's background worker to sleep (after ~30 s idle), the popup sent "start capture" and closed before the worker woke, so Chrome dropped the message. The popup now waits for the background to accept the request before closing, and shows an error instead of closing silently if it can't.
+- **Fixed: the first capture could be lost at the permission prompt.** Chrome's "debugger" permission dialog can close the popup mid-click. The background now holds that capture (surviving a worker restart) and starts it once you choose Allow or Deny.
+- Capture buttons stay disabled until the popup knows which tab it's on, instead of silently ignoring early clicks.
+- Tests: new end-to-end tests drive the real toolbar popup with a sleeping service worker. The privacy monitor now pauses new workers until it's watching them, so requests made at worker start-up are recorded too (Chrome 156 starts workers faster than the monitor could attach).
 - `pnpm zip` now runs the full production build, including the remote-URL strip step, before zipping. WXT's own zip command skipped that step.
 - README: install from a GitHub release zip, with an optional checksum check.
 

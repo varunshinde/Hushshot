@@ -3,7 +3,9 @@ import type { CaptureMode } from './types';
 
 /** Messages handled by the service worker. */
 export type BackgroundRequest =
-  | { target: 'background'; type: 'capture'; mode: CaptureMode; tabId?: number; pickContainer?: boolean }
+  /** Replies as soon as the capture is accepted. With afterPermission, it starts once the debugger prompt is decided. */
+  | { target: 'background'; type: 'capture'; mode: CaptureMode; tabId?: number; pickContainer?: boolean; afterPermission?: boolean }
+  | { target: 'background'; type: 'permission-decided' }
   | { target: 'background'; type: 'cancel' }
   | { target: 'background'; type: 'print-pdf'; id: string }
   | { target: 'background'; type: 'ocr'; id: string }

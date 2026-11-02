@@ -29,6 +29,8 @@ export function App() {
   const [measure, setMeasure] = useState<Measure | null>(null);
   const [hasDebugger, setHasDebugger] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [starting, setStarting] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
   const [recent, setRecent] = useState<(CaptureSummary & { thumb?: string })[]>([]);
 
   useEffect(() => {
@@ -39,6 +41,7 @@ export function App() {
       const forced = import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('tab')) : 0;
       const [t] = forced ? [await chrome.tabs.get(forced)] : await chrome.tabs.query({ active: true, currentWindow: true });
       setTab(t ?? null);
+      if (!t?.id) setError('No active tab to capture.');
       const blocked = restrictionReason(t?.url, await chrome.extension.isAllowedFileSchemeAccess());
       if (blocked) setError(blocked);
       else if (t?.id) {
@@ -80,15 +83,30 @@ export function App() {
   };
 
   const capture = async (mode: CaptureMode, pickContainer = false) => {
-    if (error || !tab?.id) return;
-    // First capture: offer the high-resolution engine (needs a user gesture, so it happens here).
-    if (settings.engine !== 'scroll' && !hasDebugger) {
-      const asked = (await chrome.storage.local.get(ASKED_KEY))[ASKED_KEY];
-      if (!asked) await enableDebugger();
+    if (error || !tab?.id || starting) return;
+    setStarting(true);
+    setStartError(null);
+    const req = { target: 'background', type: 'capture', mode, tabId: tab.id, pickContainer } as const;
+    try {
+      // First capture: offer the high-resolution engine (needs a user gesture, so it happens here).
+      const ask = settings.engine !== 'scroll' && !hasDebugger && !(await chrome.storage.local.get(ASKED_KEY))[ASKED_KEY];
+      if (ask) {
+        // Chrome's permission dialog can close the popup, so the background holds the
+        // capture and starts it once the choice is made, even if this popup is gone.
+        await chrome.storage.local.set({ [ASKED_KEY]: true });
+        await sendToBackground({ ...req, afterPermission: true });
+        await chrome.permissions.request({ permissions: ['debugger'] }).catch(() => false);
+        await sendToBackground({ target: 'background', type: 'permission-decided' });
+      } else {
+        // Wait until the background accepts the request: a message sent from a popup that
+        // closes straight away is dropped while Chrome wakes a sleeping service worker.
+        await sendToBackground(req);
+      }
+      window.close();
+    } catch (e) {
+      setStarting(false);
+      setStartError(`Couldn't start the capture: ${(e as Error).message}`);
     }
-    // The popup closes as soon as the page takes focus; the service worker reports any error in a new tab.
-    sendToBackground({ target: 'background', type: 'capture', mode, tabId: tab.id, pickContainer }).catch(() => {});
-    window.close();
   };
 
   return (
@@ -104,16 +122,22 @@ export function App() {
         </p>
       )}
 
-      <section class="modes" aria-label="Capture modes">
+      {startError && (
+        <p class="notice err" role="alert">
+          {startError}
+        </p>
+      )}
+
+      <section class="modes" aria-label="Capture modes" aria-busy={starting}>
         {MODES.map((m) => (
-          <button key={m.mode} class={m.mode === 'full' ? 'primary' : ''} disabled={!!error} onClick={() => capture(m.mode)} aria-keyshortcuts={`Alt+Shift+${m.key}`}>
+          <button key={m.mode} class={m.mode === 'full' ? 'primary' : ''} disabled={!!error || !tab || starting} onClick={() => capture(m.mode)} aria-keyshortcuts={`Alt+Shift+${m.key}`}>
             <span class="label">{m.label}</span>
             <span class="hint">{m.hint}</span>
             <kbd>⌥⇧{m.key}</kbd>
           </button>
         ))}
       </section>
-      <button class="link" disabled={!!error} onClick={() => capture('full', true)}>
+      <button class="link" disabled={!!error || !tab || starting} onClick={() => capture('full', true)}>
         Choose scroll area, then capture…
       </button>
 

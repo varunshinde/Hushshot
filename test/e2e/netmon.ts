@@ -52,7 +52,9 @@ class Session {
 
   async init() {
     await this.send('Network.enable');
-    await this.send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: false, flatten: false });
+    // Child workers start paused until their own Network domain is on, so requests
+    // made at startup (e.g. importScripts of the OCR engine) are recorded too.
+    await this.send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: true, flatten: false });
     await this.send('Runtime.runIfWaitingForDebugger');
   }
 }
