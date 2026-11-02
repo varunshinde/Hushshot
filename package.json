@@ -1,6 +1,6 @@
 {
   "name": "localfullpagecapture",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Private, offline screenshot and screen-capture Chrome extension",
   "type": "module",

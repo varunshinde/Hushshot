@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.2 (2026-11-01)
 
 - **Fixed: a click in the popup sometimes did nothing, so you had to click twice.** When Chrome had put the extension's background worker to sleep (after ~30 s idle), the popup sent "start capture" and closed before the worker woke, so Chrome dropped the message. The popup now waits for the background to accept the request before closing, and shows an error instead of closing silently if it can't.
 - **Fixed: the first capture could be lost at the permission prompt.** Chrome's "debugger" permission dialog can close the popup mid-click. The background now holds that capture (surviving a worker restart) and starts it once you choose Allow or Deny.
