@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 (2026-11-01)
+
+- Renamed the extension to **LocalFullPageCapture** to match the GitHub repository. This covers the name in Chrome, page titles, the popup and settings, the PDF "Producer"/"Creator" fields and the default download folder (`Downloads/LocalFullPageCapture`). If you saved settings before, your chosen download folder is kept.
+- Internal identifiers (the IndexedDB database, message channel and injected script names) are unchanged, so existing captures and settings carry over.
+- README rewritten with screenshots generated from a generic demo page (`pnpm docs:screenshots`).
+
 ## 0.1.0 — Phase 1 (2026-11-01)
 
 First working version: screenshots, full-page capture, PNG/PDF export and OCR.
@@ -16,7 +22,7 @@ First working version: screenshots, full-page capture, PNG/PDF export and OCR.
 - Master image kept as lossless PNG tiles in IndexedDB; never materialised, so captures can exceed canvas limits.
 - Smart split: cuts avoid text lines and images using DOM layout data, falling back to the blankest row band (±15% of the target). Overlap 0/40/80 px. Split lines can be dragged in the preview.
 - PNG export: hand-written encoder, 8-bit RGB (RGBA only when there is transparency), with a `pHYs` chunk at 96 × scale DPI. Multiple parts as separate files or a ZIP. JPEG/WebP only when chosen.
-- PDF export: lossless Flate images (JPEG only with "Smaller file"), fit-to-width A4/Letter/Legal or continuous pages, margins, orientation, metadata (title, source URL, date, producer "LocalCapture"). An invisible word-by-word text layer (glyphless font + ToUnicode) makes text searchable and selectable. Vector PDF via `Page.printToPDF`.
+- PDF export: lossless Flate images (JPEG only with "Smaller file"), fit-to-width A4/Letter/Legal or continuous pages, margins, orientation, metadata (title, source URL, date, producer "LocalFullPageCapture"). An invisible word-by-word text layer (glyphless font + ToUnicode) makes text searchable and selectable. Vector PDF via `Page.printToPDF`.
 - Filenames like `page-title_2026-11-01_1432_part-01-of-04.png`, from a template.
 
 ### Text and OCR
@@ -28,9 +34,6 @@ First working version: screenshots, full-page capture, PNG/PDF export and OCR.
 - Popup with mode buttons, quality/engine, predicted output size, high-resolution engine prompt and recent captures.
 - Preview page: fit/100%/200% pixel-exact zoom, pan, crop, text selection, draggable splits, size estimates, warnings, OCR status, and the export panel.
 - Options page with every setting, plus JSON export/import. Light/dark theme.
-
-### Docs
-- README with screenshots generated from a generic demo page (`pnpm docs:screenshots`).
 
 ### Tests
 - 28 unit tests (Vitest) and 21 end-to-end tests (Playwright, real Chrome with the unpacked extension). See README for the summary.

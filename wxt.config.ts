@@ -22,7 +22,7 @@ export default defineConfig({
   manifest: ({ mode }) => {
     const e2e = mode === 'e2e';
     return {
-      name: e2e ? 'LocalCapture (E2E)' : 'LocalCapture',
+      name: e2e ? 'LocalFullPageCapture (E2E)' : 'LocalFullPageCapture',
       description: 'Private, offline screenshots with searchable PDF export and on-device OCR. No network, no telemetry.',
       minimum_chrome_version: '120',
       permissions: [
@@ -41,7 +41,7 @@ export default defineConfig({
       content_security_policy: {
         extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
       },
-      action: { default_title: 'LocalCapture' },
+      action: { default_title: 'LocalFullPageCapture' },
       commands: {
         'capture-visible': { suggested_key: { default: 'Alt+Shift+S' }, description: 'Capture visible area' },
         'capture-full': { suggested_key: { default: 'Alt+Shift+F' }, description: 'Capture full page' },

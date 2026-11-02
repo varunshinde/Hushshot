@@ -122,8 +122,8 @@ export async function buildPdf(pages: PdfPageInput[], meta: PdfMeta): Promise<Ui
   const doc = await PDFDocument.create({ updateMetadata: false });
   doc.setTitle(meta.title, { showInWindowTitleBar: true });
   doc.setSubject(meta.subject);
-  doc.setProducer('LocalCapture');
-  doc.setCreator('LocalCapture');
+  doc.setProducer('LocalFullPageCapture');
+  doc.setCreator('LocalFullPageCapture');
   doc.setCreationDate(meta.created);
   doc.setModificationDate(meta.created);
   const ctx = doc.context;

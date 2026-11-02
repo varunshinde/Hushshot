@@ -94,7 +94,7 @@ export function App() {
   return (
     <main>
       <header class="row">
-        <strong class="grow">LocalCapture</strong>
+        <strong class="grow">LocalFullPageCapture</strong>
         <span class="muted" title="Nothing leaves your computer">Offline · private</span>
       </header>
 

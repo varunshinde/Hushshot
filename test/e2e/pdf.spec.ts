@@ -48,7 +48,7 @@ test('multi-page A4 PDF is searchable, selectable and aligned with the image', a
   expect(doc.pages[0].width).toBeCloseTo(595.28, 1);
   expect(doc.info.Title).toBe('Long article fixture');
   expect(doc.info.Subject).toMatch(/article\.html$/);
-  expect(doc.info.Producer).toBe('LocalCapture');
+  expect(doc.info.Producer).toBe('LocalFullPageCapture');
   const pdfText = norm(doc.pages.map((p) => p.items.map((i) => i.str).join(' ')).join(' '));
   const domText = norm(await page.evaluate(() => document.getElementById('content')!.innerText));
   const cer = characterErrorRate(domText.replace(/\s/g, ''), pdfText.replace(/\s/g, ''));

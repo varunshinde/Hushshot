@@ -162,7 +162,7 @@ export const test = base.extend<{ ext: Ext }>({
 export { expect };
 
 /**
- * Is LocalCapture's own debugger session still attached to the tab?
+ * Is LocalFullPageCapture's own debugger session still attached to the tab?
  * (getTargets().attached is also true for Playwright's connection, so probe by
  * attaching: that only fails if this extension is already attached.)
  */

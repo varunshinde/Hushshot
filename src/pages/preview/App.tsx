@@ -477,7 +477,7 @@ function Preview({ id }: { id: string }) {
           <button
             class="danger"
             onClick={async () => {
-              if (!confirm('Delete this capture from LocalCapture? Downloaded files are not affected.')) return;
+              if (!confirm('Delete this capture from LocalFullPageCapture? Downloaded files are not affected.')) return;
               await deleteCapture(id);
               window.close();
             }}

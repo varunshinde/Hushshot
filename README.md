@@ -1,14 +1,14 @@
-# LocalCapture
+# LocalFullPageCapture
 
 **Pixel-sharp full-page screenshots, searchable PDFs and on-device OCR for Chrome. Nothing ever leaves your computer.**
 
-LocalCapture is a private, offline screenshot extension (Manifest V3). It captures entire web pages at up to 4× resolution, exports lossless PNGs and PDFs you can search and select text in, and pulls the text out of everything, including images and charts. It makes no network requests at all: no analytics, no accounts, no cloud.
+LocalFullPageCapture is a private, offline screenshot extension (Manifest V3). It captures entire web pages at up to 4× resolution, exports lossless PNGs and PDFs you can search and select text in, and pulls the text out of everything, including images and charts. It makes no network requests at all: no analytics, no accounts, no cloud.
 
 <p align="center">
-  <img src="docs/images/export-pdf.png" alt="LocalCapture preview page showing a captured article with the PDF export panel" width="900">
+  <img src="docs/images/export-pdf.png" alt="LocalFullPageCapture preview page showing a captured article with the PDF export panel" width="900">
 </p>
 
-## Why LocalCapture
+## Why LocalFullPageCapture
 
 | | |
 |---|---|
@@ -49,16 +49,16 @@ Switch to **Select text** and drag a box. This chart is a `<canvas>`, so its lab
 ### Popup and settings
 
 <p align="center">
-  <img src="docs/images/popup.png" alt="The LocalCapture popup with four capture modes, quality and engine settings" width="300">
+  <img src="docs/images/popup.png" alt="The LocalFullPageCapture popup with four capture modes, quality and engine settings" width="300">
   &nbsp;
-  <img src="docs/images/settings.png" alt="The LocalCapture settings page" width="520">
+  <img src="docs/images/settings.png" alt="The LocalFullPageCapture settings page" width="520">
 </p>
 
 > The screenshots are generated automatically from a generic demo page in this repo (`test/fixtures/demo.html`) with `pnpm docs:screenshots`.
 
 ## Install
 
-LocalCapture isn't on the Chrome Web Store. You build it once and load it as an unpacked extension.
+LocalFullPageCapture isn't on the Chrome Web Store. You build it once and load it as an unpacked extension.
 
 **You need:** Google Chrome 120+, [Node.js](https://nodejs.org) 20+ and pnpm 10.
 
@@ -86,13 +86,13 @@ Then, in Chrome:
 
 1. Open `chrome://extensions` and turn on **Developer mode** (top right).
 2. Click **Load unpacked** and choose the `dist/chrome-mv3` folder.
-3. Click the puzzle-piece icon in the toolbar and pin **LocalCapture**.
+3. Click the puzzle-piece icon in the toolbar and pin **LocalFullPageCapture**.
 
-Chrome loads the extension from that folder, so keep it where it is. After pulling updates, run `pnpm build` again and click the reload arrow on LocalCapture's card in `chrome://extensions`. Your settings and saved captures are kept.
+Chrome loads the extension from that folder, so keep it where it is. After pulling updates, run `pnpm build` again and click the reload arrow on LocalFullPageCapture's card in `chrome://extensions`. Your settings and saved captures are kept.
 
 ## How to use it
 
-1. Open any web page and click the LocalCapture icon, or use a shortcut.
+1. Open any web page and click the LocalFullPageCapture icon, or use a shortcut.
 2. Pick a mode. The popup shows the output size before you capture.
 3. The preview page opens: zoom, crop, adjust where long pages split, then export.
 
@@ -105,7 +105,7 @@ Chrome loads the extension from that folder, so keep it where it is. After pulli
 
 Press **Esc** to cancel at any time. To change the shortcuts, go to `chrome://extensions/shortcuts`.
 
-**First capture:** Chrome asks you to allow the optional *debugger* permission. Allow it to get 2×–4× captures. While a capture runs, Chrome shows a "started debugging this browser" bar; it goes away when the capture finishes. If you decline, LocalCapture still works at your screen's normal resolution.
+**First capture:** Chrome asks you to allow the optional *debugger* permission. Allow it to get 2×–4× captures. While a capture runs, Chrome shows a "started debugging this browser" bar; it goes away when the capture finishes. If you decline, LocalFullPageCapture still works at your screen's normal resolution.
 
 **Pages with their own scroll area** (Gmail, Notion and similar apps) are detected automatically. If the wrong part scrolls, use **Choose scroll area** in the popup.
 
@@ -120,7 +120,7 @@ Press **Esc** to cancel at any time. To change the shortcuts, go to `chrome://ex
 
 - **No network requests, ever.** The OCR engine, WebAssembly and language model are bundled. The build fails if any remote URL is left in the code.
 - **No remote code.** No `eval` and no downloaded scripts. The Content Security Policy is `script-src 'self' 'wasm-unsafe-eval'`.
-- **Minimal permissions.** No host permissions: LocalCapture only touches a tab when you click its icon or press a shortcut. Every permission is explained in [PERMISSIONS.md](PERMISSIONS.md).
+- **Minimal permissions.** No host permissions: LocalFullPageCapture only touches a tab when you click its icon or press a shortcut. Every permission is explained in [PERMISSIONS.md](PERMISSIONS.md).
 - **Checked by tests.** The end-to-end tests record every request from every part of the extension and fail on anything that isn't a bundled file.
 - Captures are stored only in the extension's local storage in your Chrome profile.
 

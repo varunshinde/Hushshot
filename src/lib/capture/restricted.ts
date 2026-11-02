@@ -6,7 +6,7 @@ export const RESTRICTED_MESSAGE =
   "Chrome doesn't allow capturing this page. Browser pages (chrome://, about:, the New Tab page), the Chrome Web Store and other extensions' pages are protected.";
 
 export const FILE_URL_MESSAGE =
-  'To capture local files, enable "Allow access to file URLs" for LocalCapture in chrome://extensions.';
+  'To capture local files, enable "Allow access to file URLs" for LocalFullPageCapture in chrome://extensions.';
 
 const BLOCKED_SCHEMES = ['chrome:', 'chrome-untrusted:', 'chrome-search:', 'chrome-extension:', 'edge:', 'about:', 'devtools:', 'view-source:', 'brave:', 'opera:', 'vivaldi:'];
 const BLOCKED_HOSTS = ['chromewebstore.google.com', 'microsoftedge.microsoft.com'];

@@ -1,18 +1,18 @@
-# LocalCapture permissions
+# LocalFullPageCapture permissions
 
-LocalCapture asks for the smallest set of permissions that makes each feature work. It has **no host permissions** in the production build, no `externally_connectable`, no `web_accessible_resources`, and never makes a network request.
+LocalFullPageCapture asks for the smallest set of permissions that makes each feature work. It has **no host permissions** in the production build, no `externally_connectable`, no `web_accessible_resources`, and never makes a network request.
 
 ## Required permissions
 
 | Permission | Why it's needed | What it can't do |
 |---|---|---|
-| `activeTab` | Grants temporary access to the tab you're on, **only** when you click the toolbar icon or press a LocalCapture shortcut. Used to inject the capture script and to call `tabs.captureVisibleTab`. | No access to any other tab, and none until you invoke LocalCapture. Access ends when the tab navigates. |
+| `activeTab` | Grants temporary access to the tab you're on, **only** when you click the toolbar icon or press a LocalFullPageCapture shortcut. Used to inject the capture script and to call `tabs.captureVisibleTab`. | No access to any other tab, and none until you invoke LocalFullPageCapture. Access ends when the tab navigates. |
 | `scripting` | Injects the capture script (`capture.js`) into the active tab on demand: page preparation, the region/element pickers, layout measurement and the DOM text layer. | Only works on tabs `activeTab` has granted. Nothing is injected automatically; there are no declared content scripts. |
 | `storage` | Saves your settings (quality, PDF options, …) in `chrome.storage.local`. | Never used for image data. |
 | `unlimitedStorage` | Captures (lossless PNG tiles, often tens of MB) are kept in the extension's IndexedDB. Without this, Chrome's quota could evict them. | Stays inside the browser profile. |
 | `offscreen` | Creates a hidden extension page that stitches tiles and runs Tesseract OCR in a Web Worker. The service worker can't start Workers or do heavy canvas work reliably. | The offscreen document can only use `chrome.runtime` messaging. |
 | `downloads` | Saves exported files (PNG/PDF/ZIP/TXT/MD) to your Downloads folder, optionally in a subfolder. | Only for files you export. |
-| `clipboardWrite` | "Copy image" and "Copy text" in the preview page. | Write-only; LocalCapture never reads your clipboard. |
+| `clipboardWrite` | "Copy image" and "Copy text" in the preview page. | Write-only; LocalFullPageCapture never reads your clipboard. |
 
 ## Optional permissions (requested at runtime)
 

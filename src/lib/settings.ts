@@ -94,7 +94,7 @@ export const DEFAULT_SETTINGS: Settings = {
   ocrThreshold: false,
   ocrWholeImage: 'auto',
   filenameTemplate: '{title}_{date}_{time}_{part}',
-  downloadFolder: 'LocalCapture',
+  downloadFolder: 'LocalFullPageCapture',
   openPreview: true,
 };
 

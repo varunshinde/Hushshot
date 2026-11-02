@@ -55,7 +55,7 @@ export function App() {
     const url = URL.createObjectURL(new Blob([JSON.stringify(s, null, 2)], { type: 'application/json' }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'localcapture-settings.json';
+    a.download = 'localfullpagecapture-settings.json';
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   };
@@ -72,8 +72,8 @@ export function App() {
 
   return (
     <main>
-      <h1>LocalCapture settings</h1>
-      <p class="muted">Everything runs on this computer. LocalCapture makes no network requests.</p>
+      <h1>LocalFullPageCapture settings</h1>
+      <p class="muted">Everything runs on this computer. LocalFullPageCapture makes no network requests.</p>
 
       <section>
         <h2>Capture</h2>
