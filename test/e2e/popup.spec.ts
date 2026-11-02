@@ -45,7 +45,7 @@ for (const when of ['as soon as it renders', 'after a pause']) {
       cdp,
       `new Promise((done) => {
         const tick = () => {
-          const b = [...document.querySelectorAll('button')].find((x) => x.textContent.includes('Full page') && !x.disabled);
+          const b = [...document.querySelectorAll('button')].find((x) => x.textContent.includes('Capture full page') && !x.disabled);
           if (!b) return setTimeout(tick, 5);
           setTimeout(() => { b.click(); done(true); }, ${when === 'after a pause' ? 1500 : 0});
         };
@@ -79,4 +79,33 @@ test('a capture held for the permission prompt survives the popup closing and th
   await hooks.evaluate(() => chrome.runtime.sendMessage({ target: 'background', type: 'permission-decided' }));
   await demo.page.waitForTimeout(1500);
   expect(ext.context.pages().filter((p) => p.url().includes('preview.html')).length).toBe(2); // hooks page + one capture
+});
+
+test('one-click mode: the toolbar icon captures straight away instead of opening the menu', async ({ ext }) => {
+  const popupOf = () => ext.sw.evaluate(() => chrome.action.getPopup({}));
+  await expect.poll(popupOf).toMatch(/popup\.html$/);
+  await ext.sw.evaluate(() => (globalThis as any).__lcTest.saveSettings({ toolbarClick: 'capture' }));
+  await expect.poll(popupOf).toBe('');
+  await ext.sw.evaluate(() => (globalThis as any).__lcTest.saveSettings({ toolbarClick: 'menu' }));
+  await expect.poll(popupOf).toMatch(/popup\.html$/);
+});
+
+test('the toolbar icon shows capture progress, then clears', async ({ ext }) => {
+  const { tabId } = await ext.open('article.html');
+  const hooks = await ext.hooks();
+  const seen = hooks.evaluate(async (id) => {
+    const texts = new Set<string>();
+    const end = Date.now() + 60_000;
+    while (Date.now() < end) {
+      texts.add(await chrome.action.getBadgeText({ tabId: id }));
+      if (texts.size > 2 && (await chrome.action.getBadgeText({ tabId: id })) === '') break;
+      await new Promise((r) => setTimeout(r, 30));
+    }
+    return [...texts];
+  }, tabId);
+  const out = await ext.capture(tabId, { mode: 'full', settings: { quality: 1, ocrMode: 'demand' } });
+  expect(out.ok, out.error).toBe(true);
+  const texts = await seen;
+  expect(texts.some((t) => /^\d+%$/.test(t))).toBe(true);
+  expect(await hooks.evaluate((id) => chrome.action.getBadgeText({ tabId: id }), tabId)).toBe('');
 });

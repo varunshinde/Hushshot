@@ -41,7 +41,11 @@ export default defineConfig({
       content_security_policy: {
         extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
       },
-      action: { default_title: 'LocalFullPageCapture' },
+      icons: { 16: 'icons/icon-16.png', 32: 'icons/icon-32.png', 48: 'icons/icon-48.png', 128: 'icons/icon-128.png' },
+      action: {
+        default_title: 'LocalFullPageCapture',
+        default_icon: { 16: 'icons/icon-16.png', 32: 'icons/icon-32.png', 48: 'icons/icon-48.png' },
+      },
       commands: {
         'capture-visible': { suggested_key: { default: 'Alt+Shift+S' }, description: 'Capture visible area' },
         'capture-full': { suggested_key: { default: 'Alt+Shift+F' }, description: 'Capture full page' },

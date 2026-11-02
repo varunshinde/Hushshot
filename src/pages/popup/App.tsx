@@ -2,17 +2,11 @@ import { useEffect, useState } from 'preact/hooks';
 import { predictSize } from '../../lib/capture/plan';
 import { restrictionReason } from '../../lib/capture/restricted';
 import { sendToBackground } from '../../lib/messages';
-import { loadSettings, saveSettings, type Settings } from '../../lib/settings';
+import { loadSettings, QUALITY_LABELS, saveSettings, type Settings } from '../../lib/settings';
 import { getBlob, listCaptures } from '../../lib/storage/db';
 import type { CaptureMode, CaptureSummary } from '../../lib/types';
 import { fmtBytes, fmtDate, fmtPx } from '../shared/format';
-
-const MODES: { mode: CaptureMode; label: string; key: string; hint: string }[] = [
-  { mode: 'visible', label: 'Visible area', key: 'S', hint: 'Current viewport' },
-  { mode: 'full', label: 'Full page', key: 'F', hint: 'Entire scrollable page' },
-  { mode: 'region', label: 'Region', key: 'R', hint: 'Drag a rectangle' },
-  { mode: 'element', label: 'Element', key: 'E', hint: 'Click a page element' },
-];
+import { IconArea, IconElement, IconGear, IconLock, IconVisible } from '../shared/icons';
 
 interface Measure {
   width: number;
@@ -22,12 +16,29 @@ interface Measure {
 }
 
 const ASKED_KEY = 'debuggerAsked';
+const TIPS_KEY = 'tipsSeen';
+
+const COMMAND_FOR: Record<CaptureMode, string> = {
+  visible: 'capture-visible',
+  full: 'capture-full',
+  region: 'capture-region',
+  element: 'capture-element',
+};
+
+const SMALL_MODES: { mode: CaptureMode; label: string; Icon: typeof IconVisible }[] = [
+  { mode: 'visible', label: 'Visible', Icon: IconVisible },
+  { mode: 'region', label: 'Area', Icon: IconArea },
+  { mode: 'element', label: 'Element', Icon: IconElement },
+];
 
 export function App() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [tab, setTab] = useState<chrome.tabs.Tab | null>(null);
   const [measure, setMeasure] = useState<Measure | null>(null);
   const [hasDebugger, setHasDebugger] = useState(false);
+  const [asked, setAsked] = useState(true);
+  const [tipsSeen, setTipsSeen] = useState(true);
+  const [shortcuts, setShortcuts] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
@@ -37,6 +48,10 @@ export function App() {
     (async () => {
       setSettings(await loadSettings());
       setHasDebugger(await chrome.permissions.contains({ permissions: ['debugger'] }));
+      const flags = await chrome.storage.local.get([ASKED_KEY, TIPS_KEY]);
+      setAsked(!!flags[ASKED_KEY]);
+      setTipsSeen(!!flags[TIPS_KEY]);
+      chrome.commands.getAll().then((cmds) => setShortcuts(Object.fromEntries(cmds.map((c) => [c.name ?? '', c.shortcut ?? '']))));
       // E2E builds only: ?tab=<id> targets a tab, so the popup can be opened as a page in tests.
       const forced = import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('tab')) : 0;
       const [t] = forced ? [await chrome.tabs.get(forced)] : await chrome.tabs.query({ active: true, currentWindow: true });
@@ -56,7 +71,7 @@ export function App() {
           /* page not scriptable yet; capture will report */
         }
       }
-      const list = await listCaptures(5);
+      const list = await listCaptures(3);
       setRecent(
         await Promise.all(
           list.map(async (c) => {
@@ -71,25 +86,26 @@ export function App() {
   if (!settings) return <div class="pad muted">Loading…</div>;
 
   const update = async (patch: Partial<Settings>) => setSettings(await saveSettings(patch));
-  const usesCdp = settings.engine !== 'scroll' && hasDebugger;
-  const scale = usesCdp ? settings.quality : measure?.dpr ?? 1;
+  const wantsSharp = settings.engine !== 'scroll';
+  const usesSharp = wantsSharp && hasDebugger;
+  const scale = usesSharp ? settings.quality : measure?.dpr ?? 1;
   const est = measure ? predictSize(measure.width, Math.min(measure.height, settings.maxHeightCss), scale) : null;
+  const disabled = !!error || !tab || starting;
 
-  const enableDebugger = async () => {
+  const enableSharp = async () => {
     await chrome.storage.local.set({ [ASKED_KEY]: true });
-    const ok = await chrome.permissions.request({ permissions: ['debugger'] });
-    setHasDebugger(ok);
-    return ok;
+    setAsked(true);
+    setHasDebugger(await chrome.permissions.request({ permissions: ['debugger'] }));
   };
 
   const capture = async (mode: CaptureMode, pickContainer = false) => {
-    if (error || !tab?.id || starting) return;
+    if (disabled || !tab?.id) return;
     setStarting(true);
     setStartError(null);
     const req = { target: 'background', type: 'capture', mode, tabId: tab.id, pickContainer } as const;
     try {
-      // First capture: offer the high-resolution engine (needs a user gesture, so it happens here).
-      const ask = settings.engine !== 'scroll' && !hasDebugger && !(await chrome.storage.local.get(ASKED_KEY))[ASKED_KEY];
+      // First capture: offer Sharp mode (needs a user gesture, so it happens here).
+      const ask = wantsSharp && !hasDebugger && !(await chrome.storage.local.get(ASKED_KEY))[ASKED_KEY];
       if (ask) {
         // Chrome's permission dialog can close the popup, so the background holds the
         // capture and starts it once the choice is made, even if this popup is gone.
@@ -109,73 +125,104 @@ export function App() {
     }
   };
 
+  const dismissTips = () => {
+    chrome.storage.local.set({ [TIPS_KEY]: true });
+    setTipsSeen(true);
+  };
+
+  const fullKey = shortcuts[COMMAND_FOR.full];
+  const qualityName = usesSharp ? QUALITY_LABELS[settings.quality].replace(/ \(.*/, '') : 'Screen quality';
+
   return (
     <main>
       <header class="row">
+        <img src="/icons/icon-32.png" width="22" height="22" alt="" />
         <strong class="grow">LocalFullPageCapture</strong>
-        <span class="muted" title="Nothing leaves your computer">Offline · private</span>
+        <span class="offline" title="Nothing leaves your computer: no account, no uploads, no network requests.">
+          <IconLock size={12} /> Offline
+        </span>
+        <button class="icon-btn" onClick={() => chrome.runtime.openOptionsPage()} title="Settings" aria-label="Settings">
+          <IconGear />
+        </button>
       </header>
+
+      {!tipsSeen && (
+        <section class="tips" aria-label="Tips">
+          <p>
+            <b>Welcome.</b> A few things that help:
+          </p>
+          <ul>
+            <li>{fullKey ? <kbd>{fullKey}</kbd> : 'A keyboard shortcut'} captures the full page from any tab.</li>
+            <li>
+              Press <kbd>Esc</kbd> to cancel a capture.
+            </li>
+            <li>Files are saved to Downloads{settings.downloadFolder ? `/${settings.downloadFolder}` : ''}.</li>
+          </ul>
+          <button onClick={dismissTips}>Got it</button>
+        </section>
+      )}
 
       {error && (
         <p class="notice err" role="alert">
           {error}
         </p>
       )}
-
       {startError && (
         <p class="notice err" role="alert">
           {startError}
         </p>
       )}
 
-      <section class="modes" aria-label="Capture modes" aria-busy={starting}>
-        {MODES.map((m) => (
-          <button key={m.mode} class={m.mode === 'full' ? 'primary' : ''} disabled={!!error || !tab || starting} onClick={() => capture(m.mode)} aria-keyshortcuts={`Alt+Shift+${m.key}`}>
-            <span class="label">{m.label}</span>
-            <span class="hint">{m.hint}</span>
-            <kbd>⌥⇧{m.key}</kbd>
-          </button>
-        ))}
-      </section>
-      <button class="link" disabled={!!error || !tab || starting} onClick={() => capture('full', true)}>
-        Choose scroll area, then capture…
-      </button>
-
-      {est && (
-        <p class="muted est">
-          Full page ≈ {fmtPx(est.width, est.height)} · ~{fmtBytes(est.pngMB * 1048576)} PNG
-          {measure!.height > settings.maxHeightCss && ' (capped)'}
-          {measure!.root !== 'page' && ` · inner scroll area ${measure!.root}`}
+      {wantsSharp && !hasDebugger && !asked && !error && (
+        <p class="notice info sharp-note">
+          Your first capture asks Chrome to allow <b>Sharp mode</b> for 2×–4× quality. While it captures, Chrome shows a bar saying this extension is debugging the tab. That's how Sharp mode works, and the bar closes when the capture ends.
         </p>
       )}
 
-      <section class="opts">
-        <label>
-          Quality
-          <select value={settings.quality} onChange={(e) => update({ quality: Number(e.currentTarget.value) as Settings['quality'] })} disabled={!usesCdp}>
-            <option value={1}>Standard (1x)</option>
-            <option value={2}>High (2x)</option>
-            <option value={3}>Ultra (3x)</option>
-            <option value={4}>Max (4x)</option>
-          </select>
-        </label>
-        <label>
-          Engine
-          <select value={settings.engine} onChange={(e) => update({ engine: e.currentTarget.value as Settings['engine'] })}>
-            <option value="auto">Auto</option>
-            <option value="cdp">High-resolution (CDP)</option>
-            <option value="scroll">Scroll-stitch</option>
-          </select>
-        </label>
+      <button class="capture-main" disabled={disabled} onClick={() => capture('full')} aria-keyshortcuts={fullKey || undefined}>
+        <span class="label">Capture full page</span>
+        {fullKey && <kbd>{fullKey}</kbd>}
+        <span class="sub">
+          {starting
+            ? 'Starting…'
+            : est
+              ? `${qualityName} · about ${fmtBytes(est.pngMB * 1048576)} · ${fmtPx(est.width, est.height)}${measure!.height > settings.maxHeightCss ? ' (capped)' : ''}`
+              : 'The whole page, top to bottom'}
+        </span>
+      </button>
+
+      <section class="modes" aria-label="Other capture modes">
+        {SMALL_MODES.map(({ mode, label, Icon }) => {
+          const key = shortcuts[COMMAND_FOR[mode]];
+          return (
+            <button key={mode} disabled={disabled} onClick={() => capture(mode)} title={key ? `${label} (${key})` : label}>
+              <Icon size={18} />
+              <span>{label}</span>
+              {key && <small>{key}</small>}
+            </button>
+          );
+        })}
       </section>
 
-      {settings.engine !== 'scroll' && !hasDebugger && (
-        <div class="notice info">
-          High-resolution engine is off, so captures use your display's native resolution ({measure?.dpr ?? 1}x).{' '}
-          <button onClick={enableDebugger}>Enable 2x–4x</button>
-        </div>
-      )}
-      {usesCdp && <p class="muted small">While capturing, Chrome shows a "started debugging this browser" bar. That's expected; it goes away when the capture finishes.</p>}
+      <div class="row quality">
+        <span class="muted grow">Quality</span>
+        {usesSharp ? (
+          <select value={settings.quality} onChange={(e) => update({ quality: Number(e.currentTarget.value) as Settings['quality'] })} aria-label="Quality">
+            {([1, 2, 3, 4] as const).map((q) => (
+              <option key={q} value={q}>
+                {QUALITY_LABELS[q]}
+              </option>
+            ))}
+          </select>
+        ) : wantsSharp ? (
+          <button class="link" onClick={enableSharp}>
+            Screen ({measure?.dpr ?? 1}×) · Allow Sharp mode
+          </button>
+        ) : (
+          <span class="muted">Screen ({measure?.dpr ?? 1}×)</span>
+        )}
+      </div>
+      {measure && measure.root !== 'page' && <p class="muted small">This page scrolls inside a panel ({measure.root}). It's captured automatically.</p>}
 
       {recent.length > 0 && (
         <section aria-label="Recent captures">
@@ -183,10 +230,9 @@ export function App() {
           <ul class="recent">
             {recent.map((c) => (
               <li key={c.id}>
-                <a href={chrome.runtime.getURL(`/preview.html?id=${c.id}`)} target="_blank" rel="noreferrer">
+                <a href={chrome.runtime.getURL(`/preview.html?id=${c.id}`)} target="_blank" rel="noreferrer" title={`${c.title || 'Untitled'}\n${fmtDate(c.createdAt)} · ${fmtPx(c.width, c.height)}`}>
                   {c.thumb ? <img src={c.thumb} alt="" /> : <span class="ph" />}
                   <span class="t">{c.title || 'Untitled'}</span>
-                  <span class="muted">{fmtDate(c.createdAt)} · {fmtPx(c.width, c.height)}</span>
                 </a>
               </li>
             ))}
@@ -195,9 +241,9 @@ export function App() {
       )}
 
       <footer class="row">
-        <a href={chrome.runtime.getURL('/options.html')} target="_blank" rel="noreferrer">
-          Settings
-        </a>
+        <button class="link" disabled={disabled} onClick={() => capture('full', true)} title="For app pages where the wrong part scrolls">
+          Pick scroll area…
+        </button>
         <span class="grow" />
         <span class="muted">Esc cancels a capture</span>
       </footer>

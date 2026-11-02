@@ -66,8 +66,9 @@ async function resolveTab(tabId?: number): Promise<chrome.tabs.Tab> {
   return tab;
 }
 
-function setBadge(tabId: number, text: string) {
-  chrome.action.setBadgeBackgroundColor({ color: '#2563eb', tabId }).catch(() => {});
+/** Progress on the toolbar icon: nothing drawn on the page could stay out of the screenshot. */
+function setBadge(tabId: number, text: string, color = '#2563eb') {
+  chrome.action.setBadgeBackgroundColor({ color, tabId }).catch(() => {});
   chrome.action.setBadgeText({ text, tabId }).catch(() => {});
 }
 
@@ -81,17 +82,22 @@ export async function runCapture(req: CaptureRequest): Promise<CaptureOutcome> {
   }
   const tabId = tab.id!;
   active = { tabId, cancelled: false };
-  setBadge(tabId, '●');
+  setBadge(tabId, '…');
+  let failed = false;
   try {
     const id = await capture(tab, req);
     return { ok: true, id, warnings: [] };
   } catch (e) {
     if (e instanceof CaptureCancelled) return { ok: false, cancelled: true, error: 'Capture cancelled.', code: 'cancelled' };
+    failed = true;
     const code = e instanceof CaptureError ? e.code : 'error';
     return { ok: false, error: (e as Error).message ?? String(e), code };
   } finally {
     active = null;
-    setBadge(tabId, '');
+    if (failed) {
+      setBadge(tabId, '!', '#b3261e');
+      setTimeout(() => setBadge(tabId, ''), 4000);
+    } else setBadge(tabId, '');
   }
 }
 
@@ -249,6 +255,7 @@ async function capture(tab: chrome.tabs.Tab, req: CaptureRequest): Promise<strin
           );
       if (geom) geoms.push(geom);
       broadcast({ type: 'capture-progress', tabId, stage: 'tiles', progress: (i + 1) / shots.length });
+      setBadge(tabId, `${Math.min(99, Math.round(((i + 1) / shots.length) * 100))}%`);
     }
 
     checkCancel();

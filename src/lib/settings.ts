@@ -2,8 +2,11 @@ export type Quality = 1 | 2 | 3 | 4;
 export type EngineSetting = 'auto' | 'cdp' | 'scroll';
 export type StickyMode = 'once' | 'hide' | 'asis';
 export type PaperSize = 'a4' | 'letter' | 'legal' | 'continuous';
+export type DownloadFormat = 'png' | 'pdf' | 'jpeg' | 'webp';
 
 export interface Settings {
+  /** Toolbar icon: open the capture menu, or capture the full page straight away. */
+  toolbarClick: 'menu' | 'capture';
   quality: Quality;
   engine: EngineSetting;
   /** CDP tiling: scroll the page per tile (faithful) or render beyond the viewport. */
@@ -29,6 +32,10 @@ export interface Settings {
   pdfMargins: 'none' | 'small' | 'normal';
   pdfOrientation: 'auto' | 'portrait' | 'landscape';
   pdfSmaller: boolean;
+  /** Print the page address and capture date in each PDF page's footer. */
+  pdfStamp: boolean;
+  /** Format of the result page's main Download button (the last one used). */
+  downloadFormat: DownloadFormat;
   ocrMode: 'auto' | 'demand';
   ocrLanguages: string[];
   ocrThreshold: boolean;
@@ -66,13 +73,14 @@ export const DEFAULT_CHAT_SELECTORS = [
 ].join('\n');
 
 export const DEFAULT_SETTINGS: Settings = {
+  toolbarClick: 'menu',
   quality: 2,
   engine: 'auto',
   cdpStrategy: 'scroll',
   maxTileHeight: 8192,
   stickyMode: 'once',
-  hideCookieBanners: false,
-  hideChatWidgets: false,
+  hideCookieBanners: true,
+  hideChatWidgets: true,
   cookieSelectors: DEFAULT_COOKIE_SELECTORS,
   chatSelectors: DEFAULT_CHAT_SELECTORS,
   colorScheme: 'asis',
@@ -89,6 +97,8 @@ export const DEFAULT_SETTINGS: Settings = {
   pdfMargins: 'none',
   pdfOrientation: 'auto',
   pdfSmaller: false,
+  pdfStamp: false,
+  downloadFormat: 'png',
   ocrMode: 'auto',
   ocrLanguages: ['eng'],
   ocrThreshold: false,
@@ -97,6 +107,32 @@ export const DEFAULT_SETTINGS: Settings = {
   downloadFolder: 'LocalFullPageCapture',
   openPreview: true,
 };
+
+export const QUALITY_LABELS: Record<Quality, string> = {
+  1: 'Standard (1×)',
+  2: 'Sharp (2×)',
+  3: 'Extra sharp (3×)',
+  4: 'Maximum (4×)',
+};
+
+/** Settings shown under General; everything else is Advanced (and reset separately). */
+export const GENERAL_KEYS = [
+  'toolbarClick',
+  'quality',
+  'hideCookieBanners',
+  'hideChatWidgets',
+  'stickyMode',
+  'downloadFormat',
+  'pdfPaper',
+  'ocrMode',
+  'downloadFolder',
+] as const satisfies readonly (keyof Settings)[];
+
+export function advancedDefaults(): Partial<Settings> {
+  const out: Partial<Settings> = { ...DEFAULT_SETTINGS };
+  for (const k of GENERAL_KEYS) delete out[k];
+  return out;
+}
 
 /** Language packs shipped in /ocr/lang. Add more by dropping *.traineddata.gz there and rebuilding. */
 export const BUNDLED_OCR_LANGUAGES = ['eng'];
@@ -116,7 +152,9 @@ export function sanitizeSettings(input: unknown): Settings {
   const langs = Array.isArray(i.ocrLanguages)
     ? i.ocrLanguages.filter((l): l is string => typeof l === 'string' && BUNDLED_OCR_LANGUAGES.includes(l))
     : d.ocrLanguages;
+  const imageFormat = pick(i.imageFormat, ['png', 'jpeg', 'webp'] as const, d.imageFormat);
   return {
+    toolbarClick: pick(i.toolbarClick, ['menu', 'capture'] as const, d.toolbarClick),
     quality: pick(i.quality, [1, 2, 3, 4] as const, d.quality),
     engine: pick(i.engine, ['auto', 'cdp', 'scroll'] as const, d.engine),
     cdpStrategy: pick(i.cdpStrategy, ['scroll', 'beyond'] as const, d.cdpStrategy),
@@ -134,13 +172,16 @@ export function sanitizeSettings(input: unknown): Settings {
     maxSegmentHeight: num(i.maxSegmentHeight, 500, 16000, d.maxSegmentHeight),
     segmentOverlap: pick(i.segmentOverlap, [0, 40, 80] as const, d.segmentOverlap),
     multiPart: pick(i.multiPart, ['separate', 'zip'] as const, d.multiPart),
-    imageFormat: pick(i.imageFormat, ['png', 'jpeg', 'webp'] as const, d.imageFormat),
+    imageFormat,
     lossyQuality:
       typeof i.lossyQuality === 'number' && i.lossyQuality >= 0.5 && i.lossyQuality <= 1 ? i.lossyQuality : d.lossyQuality,
     pdfPaper: pick(i.pdfPaper, ['a4', 'letter', 'legal', 'continuous'] as const, d.pdfPaper),
     pdfMargins: pick(i.pdfMargins, ['none', 'small', 'normal'] as const, d.pdfMargins),
     pdfOrientation: pick(i.pdfOrientation, ['auto', 'portrait', 'landscape'] as const, d.pdfOrientation),
     pdfSmaller: bool(i.pdfSmaller, d.pdfSmaller),
+    pdfStamp: bool(i.pdfStamp, d.pdfStamp),
+    // Settings saved before downloadFormat existed carry their default image format over.
+    downloadFormat: pick(i.downloadFormat, ['png', 'pdf', 'jpeg', 'webp'] as const, imageFormat),
     ocrMode: pick(i.ocrMode, ['auto', 'demand'] as const, d.ocrMode),
     ocrLanguages: langs.length ? langs : d.ocrLanguages,
     ocrThreshold: bool(i.ocrThreshold, d.ocrThreshold),

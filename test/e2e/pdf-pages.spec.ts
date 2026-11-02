@@ -120,3 +120,23 @@ test('split lines placed for PNG never make PDF pages overflow', async ({ ext })
     expect(p.img.h / k).toBeLessThanOrEqual((841.89 - 72) / k + 1);
   }
 });
+
+test('"page address and date" footer on every page, below the image', async ({ ext }) => {
+  const { tabId } = await ext.open('paged.html');
+  const out = await ext.capture(tabId, { mode: 'full', settings: { quality: 2, ocrMode: 'demand' } });
+  expect(out.ok, out.error).toBe(true);
+  const { pdf, plan } = await ext.exportPdf(out.id!, { pdfPaper: 'a4', pdfMargins: 'none', pdfStamp: true, pdfSmaller: true, segmentOverlap: 0 });
+  const pages = await pageGeometry(pdf);
+  const lib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const doc = await lib.getDocument({ data: new Uint8Array(pdf) }).promise;
+  for (let i = 1; i <= doc.numPages; i++) {
+    const tc = await (await doc.getPage(i)).getTextContent();
+    const items = (tc.items as any[]).filter((it) => 'str' in it);
+    const footer = items.filter((it) => it.transform[5] < 18);
+    const text = footer.map((it) => it.str).join(' ');
+    expect(text).toContain('127.0.0.1:4517/paged.html');
+    expect(text).toContain(`Page ${i} of ${plan.segments.length}`);
+    // The image sits above the footer band.
+    expect(pages[i - 1].img.y).toBeGreaterThanOrEqual(18 - 0.5);
+  }
+});

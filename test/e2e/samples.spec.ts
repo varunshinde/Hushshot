@@ -44,6 +44,8 @@ test('write sample outputs', async ({ ext }) => {
   await preview.getByRole('button', { name: /Download PNG/ }).waitFor();
   await preview.waitForTimeout(1500);
   save('preview-ui.png', await preview.screenshot());
+  await preview.getByRole('button', { name: 'Choose format' }).click();
+  await preview.getByRole('menuitem', { name: /Download options/ }).click();
   await preview.getByRole('radio', { name: 'PDF' }).click();
   await preview.waitForTimeout(1500);
   save('preview-ui-pdf.png', await preview.screenshot());

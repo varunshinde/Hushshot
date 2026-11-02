@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LocalFullPageCapture: private full-page screenshots for Chrome</title>
+<meta name="description" content="Capture whole web pages in sharp 2× to 4× quality. Save as PNG or a searchable PDF, crop, and copy text, even from images. Free, no account, no uploads.">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="images/icon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="images/icon-128.png">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="images/icon-32.png" width="26" height="26" alt="">LocalFullPageCapture</a>
+    <nav class="nav-links" aria-label="Site">
+      <a href="#features" class="hide-sm">Features</a>
+      <a href="#privacy" class="hide-sm">Privacy</a>
+      <a href="#install">Install</a>
+      <a href="help.html">Help</a>
+      <a href="https://github.com/varunshinde/LocalFullPageCapture">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Chrome extension · free</span>
+      <h1>Full-page screenshots that never leave your computer</h1>
+      <p class="lede">Capture whole web pages in sharp 2× to 4× quality. Save them as PNG or a searchable PDF, crop them, and copy their text, even from images.</p>
+      <div class="ctas">
+        <a class="btn primary" href="https://github.com/varunshinde/LocalFullPageCapture/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+          Download for Chrome
+        </a>
+        <a class="btn" href="#install">How to install</a>
+      </div>
+      <div class="trust"><span>No account</span><span>No watermark</span><span>No limits</span><span>Works offline</span></div>
+      <div class="frame">
+        <div class="bar"><i></i><i></i><i></i><span>LocalFullPageCapture · result</span></div>
+        <img src="images/result.png" width="1440" height="900" alt="The result page: a captured article with Download, Copy image and Copy text buttons and a zoom slider">
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="how">
+    <div class="wrap">
+      <div class="head prose">
+        <span class="eyebrow">How it works</span>
+        <h2>Three steps, one click each</h2>
+      </div>
+      <ol class="steps">
+        <li><h3>Click the icon</h3><p class="muted">Or press <kbd>⌥⇧F</kbd> (Alt+Shift+F). Capture the full page, just what's visible, an area you drag, or one element.</p></li>
+        <li><h3>Watch it capture</h3><p class="muted">The page scrolls on its own and the toolbar icon counts up. Cookie banners and chat bubbles stay out of the picture.</p></li>
+        <li><h3>Save or copy</h3><p class="muted">Download a PNG or PDF, copy the image or its text, or crop it first. Files go straight to your Downloads folder.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="band" id="features">
+    <div class="wrap">
+      <div class="head prose">
+        <span class="eyebrow">Features</span>
+        <h2>Clean captures, even on hard pages</h2>
+        <p class="muted">Built for long articles, documentation, dashboards and app pages that scroll inside a panel.</p>
+      </div>
+
+      <div class="feature">
+        <div class="copy">
+          <h3>The whole page, without the clutter</h3>
+          <p class="muted">Sticky headers appear once instead of down every screen. Cookie banners and chat bubbles are left out, lazy-loading images are loaded first, and scrollbars are hidden. The page you're reading isn't changed.</p>
+        </div>
+        <div class="pair">
+          <figure><img src="images/demo-page.png" width="1280" height="800" alt="A web page with a cookie banner and a chat bubble" loading="lazy"><figcaption>What you see</figcaption></figure>
+          <figure><img src="images/full-page.png" width="640" height="1911" alt="The full-page capture without the banner or bubble" loading="lazy"><figcaption>What you get</figcaption></figure>
+        </div>
+      </div>
+
+      <div class="feature flip">
+        <div class="copy">
+          <h3>Sharp, not stretched</h3>
+          <p class="muted">Sharp mode draws the page again at 2×, 3× or 4× the pixels, so text and charts stay crisp when you zoom in or print. Long pages are stitched with no seams and no repeated rows.</p>
+        </div>
+        <img src="images/detail-2x.png" width="1360" height="572" alt="A sharp 1:1 crop of a chart from a 2× capture" loading="lazy">
+      </div>
+
+      <div class="feature">
+        <div class="copy">
+          <h3>Crop with handles</h3>
+          <p class="muted">See the whole capture, then drag the edges or corners. Drag to the edge of the window and the page scrolls with you, so even very long pages are easy to trim. Every download and copy uses the crop.</p>
+        </div>
+        <img src="images/crop.png" width="1440" height="900" alt="Crop mode with an adjustable box over a long capture" loading="lazy">
+      </div>
+
+      <div class="feature flip">
+        <div class="copy">
+          <h3>Text from anything</h3>
+          <p class="muted">Copy all the text in one click, or drag a box to copy just part of it. Text inside pictures and charts is read on your computer, and saved PDFs are searchable in any viewer.</p>
+        </div>
+        <img src="images/select-text.png" width="1440" height="900" alt="Dragging a box over a chart copies the text read from it" loading="lazy">
+      </div>
+
+      <div class="grid" style="margin-top:26px">
+        <div class="card"><h3>PDF pages that fit</h3><p>A4, Letter or Legal, every page the same width, breaks between lines of text, never through them.</p></div>
+        <div class="card"><h3>Page address and date</h3><p>Optionally print where and when a page was captured at the bottom of every PDF page.</p></div>
+        <div class="card"><h3>Area and element</h3><p>Drag a rectangle, or click a part of the page and use the arrow keys to widen or narrow it.</p></div>
+        <div class="card"><h3>App pages</h3><p>Pages that scroll inside a panel, like Gmail or Notion, are captured from top to bottom.</p></div>
+        <div class="card"><h3>Pinch to zoom</h3><p>Zoom the result with your trackpad, the slider or the keyboard, from the whole page down to single pixels.</p></div>
+        <div class="card"><h3>Keyboard friendly</h3><p>Shortcuts to capture from any tab, and ⌘S, ⌘C and ⌘⇧C on the result page.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="privacy">
+    <div class="wrap privacy">
+      <div class="head prose" style="margin:0">
+        <span class="eyebrow">Privacy</span>
+        <h2>Private by design, and tested to stay that way</h2>
+        <p class="muted">LocalFullPageCapture makes no network requests. There's no account, no analytics and no upload, and everything it needs, including the text-recognition model, is inside the extension.</p>
+        <p class="muted">Every change runs automated tests that record each request the extension makes and fail if anything tries to leave your computer. The code is on GitHub for anyone to read.</p>
+        <p><a href="privacy.html">Read the privacy policy →</a></p>
+      </div>
+      <ul class="perm" aria-label="Permissions">
+        <li><code>activeTab</code><span>Access to the tab you're on, only when you click the icon or press a shortcut.</span></li>
+        <li><code>scripting</code><span>Prepares that page for the capture and puts it back afterwards.</span></li>
+        <li><code>storage</code><span>Your settings and captures, kept in your Chrome profile.</span></li>
+        <li><code>downloads</code><span>Saves the files you choose to download.</span></li>
+        <li><code>clipboardWrite</code><span>Copy image and Copy text. It never reads your clipboard.</span></li>
+        <li><span><code>debugger</code> <span class="muted">(optional)</span></span><span>Sharp mode. Asked for the first time you capture, and only used during a capture.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" id="free">
+    <div class="wrap">
+      <div class="head prose">
+        <span class="eyebrow">Free</span>
+        <h2>The things other tools charge for are included</h2>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Feature</th><th>Often paid elsewhere</th><th>Here</th></tr></thead>
+          <tbody>
+            <tr><td>Full-page capture</td><td>Sometimes</td><td class="yes">✓ Free</td></tr>
+            <tr><td>Crop and export the result</td><td>Often</td><td class="yes">✓ Free</td></tr>
+            <tr><td>Page address and date on PDFs</td><td>Often</td><td class="yes">✓ Free</td></tr>
+            <tr><td>No limit on the number of captures</td><td>Often</td><td class="yes">✓ Free</td></tr>
+            <tr><td>No watermark, no account</td><td>Sometimes</td><td class="yes">✓ Free</td></tr>
+            <tr><td>Searchable PDFs and text from images</td><td>Rare</td><td class="yes">✓ Free</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="install">
+    <div class="wrap">
+      <div class="head prose">
+        <span class="eyebrow">Install</span>
+        <h2>Add it to Chrome in a minute</h2>
+        <p class="muted">LocalFullPageCapture isn't in the Chrome Web Store yet, so you add it yourself. You only do this once.</p>
+      </div>
+      <div class="install">
+        <div class="card">
+          <h3>From the download (easiest)</h3>
+          <ol>
+            <li>Download the latest <a href="https://github.com/varunshinde/LocalFullPageCapture/releases/latest">LocalFullPageCapture zip</a> and unzip it.</li>
+            <li>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b> (top right).</li>
+            <li>Click <b>Load unpacked</b> and choose the unzipped folder.</li>
+            <li>Pin it: click the puzzle-piece icon in the toolbar, then the pin next to LocalFullPageCapture.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>From the source code</h3>
+          <ol>
+            <li>Install Node.js 20+ and pnpm 10.</li>
+            <li>Clone the <a href="https://github.com/varunshinde/LocalFullPageCapture">repository</a> and run <code>pnpm install</code> then <code>pnpm build</code>.</li>
+            <li>Load the <code>dist/chrome-mv3</code> folder with <b>Load unpacked</b> as on the left.</li>
+          </ol>
+          <p class="muted" style="margin-top:6px">Each release lists a SHA-256 checksum, so you can check the download matches.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="faq">
+    <div class="wrap">
+      <div class="head prose">
+        <span class="eyebrow">Questions</span>
+        <h2>FAQ</h2>
+      </div>
+      <details class="faq"><summary>Why does Chrome say the extension is "debugging" the tab?</summary><p>That's how Sharp mode works. It asks Chrome to draw the page again at a higher resolution, which uses Chrome's debugging interface. The bar appears only while a capture runs and closes when it ends. If you'd rather not see it, turn Sharp mode off in Settings; captures then use your screen's resolution.</p></details>
+      <details class="faq"><summary>Is anything uploaded?</summary><p>No. Captures, text recognition and file exports all happen on your computer. The extension doesn't make network requests at all, and its automated tests check that on every change.</p></details>
+      <details class="faq"><summary>Where are my files saved?</summary><p>In your Downloads folder, inside a LocalFullPageCapture folder. You can change the folder and the file name pattern in Settings.</p></details>
+      <details class="faq"><summary>A page didn't capture correctly. What can I try?</summary><p>For app pages that scroll inside a panel, use <b>Pick scroll area…</b> in the popup. If parts repeat or look odd, try Settings → Advanced → Method → Compatibility mode. Chrome doesn't allow extensions to capture its own pages (like <code>chrome://</code> pages or the Web Store).</p></details>
+      <details class="faq"><summary>Does it work in other browsers?</summary><p>It's built and tested for Google Chrome. Other Chromium browsers such as Edge and Brave may work but aren't tested.</p></details>
+      <details class="faq"><summary>Is it really free?</summary><p>Yes. There's no paid tier, no trial and no limits.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="images/icon-32.png" width="22" height="22" alt="">LocalFullPageCapture</a>
+    <span class="grow"></span>
+    <a href="help.html">Help</a>
+    <a href="privacy.html">Privacy policy</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="https://github.com/varunshinde/LocalFullPageCapture">GitHub</a>
+  </div>
+</footer>
+</body>
+</html>

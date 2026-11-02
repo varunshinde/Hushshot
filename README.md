@@ -5,7 +5,7 @@
 LocalFullPageCapture is a private, offline screenshot extension (Manifest V3). It captures entire web pages at up to 4× resolution, exports lossless PNGs and PDFs you can search and select text in, and pulls the text out of everything, including images and charts. It makes no network requests at all: no analytics, no accounts, no cloud.
 
 <p align="center">
-  <img src="docs/images/export-pdf.png" alt="LocalFullPageCapture preview page showing a captured article with the PDF export panel" width="900">
+  <img src="docs/images/result.png" alt="The LocalFullPageCapture result page with Download, Copy image and Copy text buttons and a zoom slider" width="900">
 </p>
 
 ## Why LocalFullPageCapture
@@ -38,6 +38,14 @@ A 1:1 crop of a 2× capture. The chart is re-rendered at twice the pixel density
   <img src="docs/images/detail-2x.png" alt="Sharp 1:1 crop of a chart from a 2x capture" width="680">
 </p>
 
+### Crop with handles, even on very long pages
+
+Click **Crop** and the whole capture fits on screen. Drag the edges or corners, or draw a new box; drag to the edge of the window and the page scrolls with you. Click **Done cropping**, and every download and copy uses just that area.
+
+<p align="center">
+  <img src="docs/images/crop.png" alt="Crop mode: an adjustable box with eight handles over a long capture" width="900">
+</p>
+
 ### Copy text, even from images
 
 Switch to **Select text** and drag a box. This chart is a `<canvas>`, so its labels aren't real text, but on-device OCR reads them and the 19 words are copied.
@@ -46,12 +54,22 @@ Switch to **Select text** and drag a box. This chart is a `<canvas>`, so its lab
   <img src="docs/images/select-text.png" alt="Dragging a selection box over a chart copies the text OCR found in it" width="900">
 </p>
 
-### Popup and settings
+### Simple popup, simple settings
+
+One big button for the full page; Visible, Area and Element next to it. Settings shows the everyday choices first, and every fine-tuning option lives under **Advanced**.
 
 <p align="center">
-  <img src="docs/images/popup.png" alt="The LocalFullPageCapture popup with four capture modes, quality and engine settings" width="300">
+  <img src="docs/images/popup.png" alt="The LocalFullPageCapture popup with a Capture full page button and Visible, Area and Element buttons" width="300">
   &nbsp;
-  <img src="docs/images/settings.png" alt="The LocalFullPageCapture settings page" width="520">
+  <img src="docs/images/settings.png" alt="The LocalFullPageCapture settings page with General, Shortcuts, Advanced and Backup sections" width="520">
+</p>
+
+### PDFs set up in one panel
+
+Pick **PDF** from the Download menu to choose paper, margins, and whether to print the page address and date on each page.
+
+<p align="center">
+  <img src="docs/images/export-pdf.png" alt="Download options panel with PDF paper size, margins and the page address and date option" width="900">
 </p>
 
 > The screenshots are generated automatically from a generic demo page in this repo (`test/fixtures/demo.html`) with `pnpm docs:screenshots`.
@@ -104,27 +122,29 @@ Chrome loads the extension from that folder, so keep it where it is. After pulli
 
 ## How to use it
 
-1. Open any web page and click the LocalFullPageCapture icon, or use a shortcut.
-2. Pick a mode. The popup shows the output size before you capture.
-3. The preview page opens: zoom, crop, adjust where long pages split, then export.
+1. Open any web page and click the LocalFullPageCapture icon, or press a shortcut.
+2. Click **Capture full page**, or pick Visible, Area or Element. The toolbar icon shows the progress.
+3. The result page opens. Download, copy the image or its text, crop, or zoom in.
 
 | Mode | Shortcut (Mac: Option+Shift) | What it captures |
 |---|---|---|
-| **Visible area** | Alt+Shift+S | What's on screen right now |
 | **Full page** | Alt+Shift+F | The entire scrollable page |
-| **Region** | Alt+Shift+R | A rectangle you drag. Drag to the edge of the window to keep scrolling |
+| **Visible** | Alt+Shift+S | What's on screen right now |
+| **Area** | Alt+Shift+R | A rectangle you drag. Drag to the edge of the window to keep scrolling |
 | **Element** | Alt+Shift+E | One part of the page. Click it, and use ↑/↓ to pick the parent or child |
 
-Press **Esc** to cancel at any time. To change the shortcuts, go to `chrome://extensions/shortcuts`.
+Press **Esc** to cancel at any time. To change the shortcuts, go to `chrome://extensions/shortcuts`. Prefer one click? Set **Clicking the toolbar icon** to *Captures the full page right away* in Settings.
 
-**First capture:** Chrome asks you to allow the optional *debugger* permission. Allow it to get 2×–4× captures. While a capture runs, Chrome shows a "started debugging this browser" bar; it goes away when the capture finishes. If you decline, LocalFullPageCapture still works at your screen's normal resolution.
+**Sharp mode:** your first capture asks Chrome to allow it (the optional *debugger* permission). It re-draws the page at 2×–4× so text stays crisp. While it captures, Chrome shows a bar saying the extension is debugging the tab; it closes when the capture ends. If you decline, captures use your screen's resolution.
 
-**Pages with their own scroll area** (Gmail, Notion and similar apps) are detected automatically. If the wrong part scrolls, use **Choose scroll area** in the popup.
+**Pages with their own scroll area** (Gmail, Notion and similar apps) are detected automatically. If the wrong part scrolls, use **Pick scroll area…** in the popup.
+
+**On the result page:** pinch on a trackpad or use the zoom slider, **Fit page** to see everything, **Fit width** to read. Keyboard: ⌘S download, ⌘C copy image, ⌘⇧C copy all text, C crop, T select text. The full list is under Settings → Shortcuts.
 
 ### Export options
 
-- **PNG:** lossless, with the correct DPI saved in the file. Long pages split into parts at points that don't cut through text or images, and you can drag the split lines yourself.
-- **PDF:** fit to A4, Letter or Legal width, or one continuous page, with searchable text. Every page has the same width, and each page is filled to the bottom with the break placed between lines of text, so lines are never cut and gaps stay small. **Vector PDF (print)** is also available.
+- **PNG:** lossless, with the correct DPI saved in the file. Long pages split into parts at points that don't cut through text or images, and you can drag the blue break lines yourself.
+- **PDF:** fit to A4, Letter or Legal width, or one long page, with searchable text. Every page has the same width, and each page is filled to the bottom with the break placed between lines of text, so lines are never cut and gaps stay small. Optionally print the page address, capture date and page number at the bottom of each page. A **print-style PDF** (real vector text from the open tab) is in the ⋯ menu.
 - **JPEG / WebP:** only if you choose them, for smaller files.
 - **Text:** copy all text, export `.txt` or `.md` (headings and lists kept), or select an area to copy.
 
@@ -203,24 +223,24 @@ Only bundled languages are offered; nothing is downloaded at runtime. To add one
 
 1. Get `<lang>.traineddata.gz` (LSTM `best_int`, for example from the `@tesseract.js-data/<lang>` npm package). Add an entry to the `build:publicAssets` hook in `wxt.config.ts` that copies it to `ocr/lang/<lang>.traineddata.gz`.
 2. Add the code to `BUNDLED_OCR_LANGUAGES` in `src/lib/settings.ts`.
-3. Rebuild. The language appears in Settings → OCR.
+3. Rebuild. The language appears in Settings → Advanced → Text recognition.
 
 </details>
 
 ## Known limitations
 
-- **Resolution:** the Quality setting needs the debugger permission. Without it, captures use your screen's pixel ratio.
-- **DevTools device emulation** is reset by a high-resolution capture if it was turned on. Chrome drops those settings when the capture finishes, so they can't be put back.
+- **Resolution:** the Quality setting needs Sharp mode (the optional debugger permission). Without it, captures use your screen's pixel ratio.
+- **DevTools device emulation** is reset by a Sharp-mode capture if it was turned on. Chrome drops those settings when the capture finishes, so they can't be put back.
 - **Sticky and fixed elements** are detected heuristically. Elements that a script makes sticky only while you scroll may still repeat.
 - **Animated GIFs** keep playing during capture. CSS animations, transitions and videos are paused.
 - **Cross-origin iframes** are captured as images. Their text comes only from OCR.
-- **The colour-scheme override** works only with the high-resolution engine.
+- **The colour-scheme override** works only in Sharp mode.
 - **PDF viewers:** text search and selection are tested automatically in pdf.js (Firefox), Poppler and macOS Preview. Chrome's built-in viewer and Adobe Reader aren't tested automatically. Emoji appear as � in the PDF text layer.
 - **Page zoom** other than 100% is handled but not covered by automated tests.
-- **Vector PDF** prints the live tab, so the original tab must still be open.
+- **Print-style PDF** prints the live tab, so the original tab must still be open.
 - **Width** is limited to 16,384 pixels; wider captures are narrowed with a warning.
-- **Copy image** works on a single part. Raise the max segment height or crop first.
+- **Copy image** works up to 16,384 px tall. For longer captures, crop first or download instead.
 
 ## Roadmap
 
-Phase 1 (screenshots, PNG/PDF export, OCR) is done. Next up: an annotation editor, screen recording, a video editor with offline captions, and a capture library. See [CHANGELOG.md](CHANGELOG.md).
+Phase 1 (screenshots, PNG/PDF export, OCR) and a full redesign of the popup, result page and settings are done. Next up: an annotation editor, screen recording, a video editor with offline captions, and a capture library. See [CHANGELOG.md](CHANGELOG.md).

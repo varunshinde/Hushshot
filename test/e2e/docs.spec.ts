@@ -64,8 +64,10 @@ test('write README screenshots', async ({ ext }) => {
   const cx = Math.round(chart.x0) - 24, cy = Math.round(chart.y0) - 24;
   save('detail-2x.png', encode(crop(full, cx, cy, Math.round(chart.x1 - chart.x0) + 48, Math.round(chart.y1 - chart.y0) + 48)));
 
+  // The README shows the popup after the one-time tips are dismissed.
+  await (await ext.hooks()).evaluate(() => chrome.storage.local.set({ tipsSeen: true }));
   const popup = await ext.context.newPage();
-  await popup.setViewportSize({ width: 340, height: 480 });
+  await popup.setViewportSize({ width: 340, height: 440 });
   await popup.goto(`chrome-extension://${ext.extId}/popup.html?tab=${demo.tabId}`);
   await popup.getByText(/MB|px/).first().waitFor({ timeout: 5000 }).catch(() => {});
   await popup.waitForTimeout(800);
@@ -76,11 +78,28 @@ test('write README screenshots', async ({ ext }) => {
   await preview.goto(`chrome-extension://${ext.extId}/preview.html?id=${cap.id}`);
   await preview.getByRole('button', { name: /Download PNG/ }).waitFor();
   await preview.waitForTimeout(1500);
+  save('result.png', await preview.screenshot());
 
+  await preview.getByRole('button', { name: 'Choose format' }).click();
+  await preview.getByRole('menuitem', { name: /Download options/ }).click();
   await preview.getByRole('radio', { name: 'PDF' }).click();
   await preview.waitForTimeout(1500);
   save('export-pdf.png', await preview.screenshot());
   await preview.getByRole('radio', { name: 'PNG' }).click();
+  await preview.getByRole('button', { name: 'Close options' }).click();
+
+  // Crop mode: the whole page fits on screen; pull the bottom edge up to keep the top of the article.
+  await preview.getByRole('button', { name: /^Crop/ }).click();
+  await preview.waitForTimeout(400);
+  const s1 = (await preview.locator('.h-s').boundingBox())!;
+  await preview.mouse.move(s1.x + 7, s1.y + 7);
+  await preview.mouse.down();
+  await preview.mouse.move(s1.x + 7, s1.y - (s1.y - 140) * 0.62, { steps: 12 });
+  await preview.mouse.up();
+  await preview.waitForTimeout(300);
+  save('crop.png', await preview.screenshot());
+  await preview.getByRole('button', { name: 'Cancel' }).click();
+  await preview.waitForTimeout(300);
 
   // Scroll to the canvas chart (text only OCR can read) and drag a box over it in "Select text" mode.
   await preview.getByRole('button', { name: 'Select text' }).click();

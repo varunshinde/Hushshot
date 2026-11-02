@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.2.0 (2026-11-02): Simpler everywhere
+
+### New look
+- **Icon** for the toolbar and the extension page (it used to be a grey letter).
+- **Popup:** one big **Capture full page** button with the expected size, and Visible, Area and Element next to it. Quality is one small menu; the "Engine" choice moved to Advanced. Recent captures show as thumbnails. A one-time tips card explains the shortcuts, and before the first capture a short note explains Sharp mode and Chrome's "debugging" bar.
+- **One-click mode** (optional): clicking the toolbar icon captures the full page right away.
+- **Progress on the toolbar icon** during a capture (…, 10%, 20%, …), and a red "!" if it fails.
+- **Result page:** a top bar with **Download** (remembers your format; ▾ for PNG, PDF, JPEG, WebP), **Copy image** and **Copy text**, and a ⋯ menu for text files, reading text in images, print-style PDF, the original page and delete. Format options open in a side panel only when you ask.
+- **Settings:** **General** (the everyday choices), **Shortcuts**, **Advanced** (every other option, grouped, with its own reset) and **Backup & reset**. Plain names throughout: Sharp mode, Compatibility mode, Area, parts, page breaks, Read text in images.
+- Friendlier error page with what to do next.
+
+### Crop and zoom
+- **Crop** shows the whole capture with an adjustable box: eight handles, drag inside to move, or draw a new box. Dragging near the window edge scrolls, so long pages can be cropped. **Done cropping** applies it (Enter), Cancel discards it (Esc). After cropping, only the cropped area is shown, and **Edit** or **Remove** are one click away.
+- **Zoom:** Fit page, Fit width, a zoom slider (5%–800%), +/− buttons, actual pixels, keyboard (+, −, 0, F, 1, ⌘+/⌘−) and **trackpad pinch**, which zooms around the pointer.
+
+### PDF
+- New option: **Add page address and date**: the page's address, capture date and "Page n of N" at the bottom of every page, in a band that never overlaps the screenshot.
+
+### Defaults
+- Cookie banners and chat bubbles are now hidden by default (only in the screenshot; the page isn't changed). Settings you saved earlier are kept.
+
+### Tests
+- 46 unit tests and 33 end-to-end tests, including crop with handles, auto-scroll on a 25,000 px page, pixel-exact crop export, zoom around the pinch point, the format menu, one-click mode, the progress badge and the PDF footer.
+
 ## 0.1.3 (2026-11-01)
 
 - **Fixed: PDF pages with a different width.** With Orientation "Auto", each page chose portrait or landscape from its own slice, so the short last page of a long capture flipped to landscape and was drawn at a different width. All pages now share one layout (paper, orientation, scale) taken from the whole capture.

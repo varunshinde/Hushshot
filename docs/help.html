@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Help · LocalFullPageCapture</title>
+<meta name="description" content="How to capture, crop, zoom and save with LocalFullPageCapture, keyboard shortcuts and fixes for common problems.">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="images/icon-32.png" sizes="32x32">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="images/icon-32.png" width="26" height="26" alt="">LocalFullPageCapture</a>
+    <nav class="nav-links" aria-label="Site">
+      <a href="./#install">Install</a>
+      <a href="help.html" aria-current="page">Help</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="https://github.com/varunshinde/LocalFullPageCapture">GitHub</a>
+    </nav>
+  </div>
+</header>
+<main class="doc">
+  <div class="wrap">
+    <h1>Help</h1>
+
+    <h2>Capturing</h2>
+    <ul>
+      <li><b>Capture full page</b> (<kbd>⌥⇧F</kbd> / Alt+Shift+F): the whole page, top to bottom.</li>
+      <li><b>Visible</b> (<kbd>⌥⇧S</kbd>): just what's on screen.</li>
+      <li><b>Area</b> (<kbd>⌥⇧R</kbd>): drag a rectangle. Drag to the edge of the window to keep scrolling.</li>
+      <li><b>Element</b> (<kbd>⌥⇧E</kbd>): click a part of the page; ↑ and ↓ pick the larger or smaller part around it.</li>
+      <li>Press <kbd>Esc</kbd> to cancel at any time. Change these keys at <code>chrome://extensions/shortcuts</code>.</li>
+      <li>Prefer one click? Settings → General → <b>Clicking the toolbar icon</b> → <i>Captures the full page right away</i>.</li>
+    </ul>
+
+    <h2>The result page</h2>
+    <ul>
+      <li><b>Download</b> saves in the format shown. The ▾ next to it switches between PNG, PDF, JPEG and WebP, and remembers your choice.</li>
+      <li><b>Copy image</b> and <b>Copy text</b> put the capture or all of its text on the clipboard.</li>
+      <li><b>Select text</b>: drag a box over any part to copy just those words, including words in pictures and charts.</li>
+      <li><b>Crop</b>: drag the edges or corners of the box, drag inside it to move it, or draw a new one. Click <b>Done cropping</b> (or press Enter). Every download and copy then uses the cropped area. <b>Edit</b> and <b>Remove</b> appear next to the tools afterwards.</li>
+      <li><b>Zoom</b>: pinch on a trackpad, use the slider, or <b>Fit page</b> / <b>Fit width</b>. The percentage button shows actual pixels.</li>
+      <li>Long captures are split into parts or PDF pages between lines of text. Drag the blue lines to move a break.</li>
+    </ul>
+
+    <h2>Keyboard on the result page</h2>
+    <div class="table-scroll">
+      <table>
+        <tbody>
+          <tr><td><kbd>⌘S</kbd> / Ctrl+S</td><td>Download</td></tr>
+          <tr><td><kbd>⌘C</kbd> / Ctrl+C</td><td>Copy the image, or the selected words</td></tr>
+          <tr><td><kbd>⌘⇧C</kbd> / Ctrl+Shift+C</td><td>Copy all text</td></tr>
+          <tr><td><kbd>C</kbd></td><td>Crop (Enter to finish, Esc to cancel)</td></tr>
+          <tr><td><kbd>T</kbd> · <kbd>H</kbd></td><td>Select text · Move around</td></tr>
+          <tr><td><kbd>+</kbd> <kbd>−</kbd></td><td>Zoom in and out</td></tr>
+          <tr><td><kbd>0</kbd> · <kbd>F</kbd> · <kbd>1</kbd></td><td>Fit width · Fit page · Actual pixels</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Sharp mode and the "debugging" bar</h2>
+    <p>Sharp mode draws the page again at 2× to 4× so text stays crisp. To do that it uses Chrome's debugging interface, so Chrome shows a bar saying LocalFullPageCapture is debugging the tab while a capture runs. It closes when the capture ends. You can turn Sharp mode off in Settings → General; captures then use your screen's resolution.</p>
+
+    <h2>If something looks wrong</h2>
+    <ul>
+      <li><b>Part of an app page is missing</b> (Gmail, Notion and similar): use <b>Pick scroll area…</b> in the popup and click the part that scrolls.</li>
+      <li><b>A header or banner repeats</b>: Settings → General → Sticky headers → <i>Hide</i>. Some sites only make bars sticky while you scroll.</li>
+      <li><b>Images are missing or blurry placeholders</b>: Settings → Advanced → Page loading → raise <i>Wait for images</i>.</li>
+      <li><b>The capture stops early on an endless-scroll page</b>: that's the <i>Longest page</i> limit in Settings → Advanced, so it doesn't run forever.</li>
+      <li><b>Odd results with Sharp mode</b>: Settings → Advanced → Method → <i>Compatibility mode</i>.</li>
+      <li><b>"This page can't be captured"</b>: Chrome doesn't let extensions capture its own pages, such as <code>chrome://</code> pages, the New Tab page or the Chrome Web Store.</li>
+    </ul>
+
+    <p class="muted">Still stuck? Open an issue on <a href="https://github.com/varunshinde/LocalFullPageCapture/issues">GitHub</a> with the page address (if it's public) and a screenshot.</p>
+  </div>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="images/icon-32.png" width="22" height="22" alt="">LocalFullPageCapture</a>
+    <span class="grow"></span>
+    <a href="help.html">Help</a>
+    <a href="privacy.html">Privacy policy</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="https://github.com/varunshinde/LocalFullPageCapture">GitHub</a>
+  </div>
+</footer>
+</body>
+</html>

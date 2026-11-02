@@ -18,9 +18,9 @@ LocalFullPageCapture asks for the smallest set of permissions that makes each fe
 
 | Permission | When it's requested | Why |
 |---|---|---|
-| `debugger` | The first time you capture from the popup with Engine = Auto/CDP, or when you click "Enable 2x–4x" in the popup or "Grant" in Settings. | The high-resolution engine uses the Chrome DevTools Protocol to re-render the page at 2x/3x/4x (`Emulation.setDeviceMetricsOverride`) and capture PNG tiles (`Page.captureScreenshot`). It's also used for the optional "Vector PDF (print)" export (`Page.printToPDF`). The debugger attaches only to the tab being captured, and only for the duration of the capture; it is always detached afterwards, including on error or cancel. Chrome shows a "started debugging this browser" bar while it's attached. |
+| `debugger` | The first time you capture from the popup (with Capture method = Automatic or Sharp mode only), or when you click "Allow Sharp mode" in the popup or in Settings. | Sharp mode (the high-resolution engine) uses the Chrome DevTools Protocol to re-render the page at 2x/3x/4x (`Emulation.setDeviceMetricsOverride`) and capture PNG tiles (`Page.captureScreenshot`). It's also used for the optional "Print-style PDF" export (`Page.printToPDF`). The debugger attaches only to the tab being captured, and only for the duration of the capture; it is always detached afterwards, including on error or cancel. Chrome shows a "started debugging this browser" bar while it's attached. |
 
-If you decline `debugger`, captures fall back to the scroll-and-stitch engine at your display's native resolution. You can revoke it any time in Settings.
+If you decline `debugger`, captures use Compatibility mode (scroll and stitch) at your display's native resolution. You can turn Sharp mode off any time in Settings → General.
 
 ### Not requested
 

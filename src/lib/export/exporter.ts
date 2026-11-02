@@ -39,7 +39,17 @@ function localLines(rec: CaptureRecord, area: Rect): Interval[] {
 /** One page layout for the whole PDF, so every page has the same size, orientation and scale. */
 export function pdfLayout(rec: CaptureRecord, s: Settings): FitLayout {
   const area = exportArea(rec);
-  return fitLayout(area.width, area.height, { paper: s.pdfPaper, margins: s.pdfMargins, orientation: s.pdfOrientation, dpi: rec.dpi });
+  return fitLayout(area.width, area.height, pdfLayoutOptions(rec, s));
+}
+
+export function pdfLayoutOptions(rec: CaptureRecord, s: Settings) {
+  return { paper: s.pdfPaper, margins: s.pdfMargins, orientation: s.pdfOrientation, dpi: rec.dpi, footer: s.pdfStamp };
+}
+
+/** Footer text for "page address and date" PDFs. */
+export function pdfFooter(rec: CaptureRecord, page: number, pages: number) {
+  const when = new Date(rec.createdAt).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return { left: rec.url, right: `Captured ${when} \u00b7 Page ${page} of ${pages}` };
 }
 
 /** Segment height target for a format (PDF fit-to-width: one paper page, less the overlap). */
@@ -133,7 +143,7 @@ export async function exportPdf(
   onProgress?: (p: number) => void,
 ): Promise<ExportedFile> {
   const pages: PdfPageInput[] = [];
-  const layout = { paper: s.pdfPaper, margins: s.pdfMargins, orientation: s.pdfOrientation, dpi: rec.dpi };
+  const layout = pdfLayoutOptions(rec, s);
   const doc = pdfLayout(rec, s);
   const n = plan.segments.length;
   for (let i = 0; i < n; i++) {
@@ -148,7 +158,12 @@ export async function exportPdf(
       const data = await runExportJob({ op: 'flate', rgba: px.data.buffer as ArrayBuffer, width: px.width, height: px.height }, [px.data.buffer]);
       image = { kind: 'flate-rgb', width: canvas.width, height: canvas.height, data };
     }
-    pages.push({ image, words: wordsForArea(rec.words, rect), ...pageForSegment(canvas.width, canvas.height, layout, doc) });
+    pages.push({
+      image,
+      words: wordsForArea(rec.words, rect),
+      ...pageForSegment(canvas.width, canvas.height, layout, doc),
+      ...(s.pdfStamp ? { footer: pdfFooter(rec, i + 1, n) } : {}),
+    });
     onProgress?.(((i + 1) / n) * 0.9);
   }
   const bytes = await runExportJob(

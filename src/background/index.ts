@@ -96,7 +96,20 @@ async function handle(msg: BackgroundRequest | ContentRequest, sender: chrome.ru
   }
 }
 
+/** Toolbar icon: the popup menu, or (one-click mode) a full-page capture with no popup. */
+async function applyToolbarClick() {
+  const s = await loadSettings();
+  await chrome.action.setPopup({ popup: s.toolbarClick === 'capture' ? '' : 'popup.html' });
+}
+
 export function main() {
+  void applyToolbarClick();
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.settings) void applyToolbarClick();
+  });
+  // Only fires when there's no popup, i.e. in one-click mode.
+  chrome.action.onClicked.addListener((tab) => startPopupCapture({ mode: 'full', tabId: tab.id }));
+
   chrome.commands.onCommand.addListener(async (command, tab) => {
     const mode = COMMANDS[command];
     if (!mode) return;

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Changelog · LocalFullPageCapture</title>
+<meta name="description" content="What's new in each version of LocalFullPageCapture.">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="images/icon-32.png" sizes="32x32">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="images/icon-32.png" width="26" height="26" alt="">LocalFullPageCapture</a>
+    <nav class="nav-links" aria-label="Site">
+      <a href="./#install">Install</a>
+      <a href="help.html">Help</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="https://github.com/varunshinde/LocalFullPageCapture">GitHub</a>
+    </nav>
+  </div>
+</header>
+<main class="doc">
+  <div class="wrap">
+    <h1>Changelog</h1>
+    <p class="muted">Downloads for each version are on the <a href="https://github.com/varunshinde/LocalFullPageCapture/releases">Releases page</a>.</p>
+<h2>0.2.0 (2026-11-02): Simpler everywhere</h2>
+<h3>New look</h3>
+<ul>
+<li><b>Icon</b> for the toolbar and the extension page (it used to be a grey letter).</li>
+<li><b>Popup:</b> one big <b>Capture full page</b> button with the expected size, and Visible, Area and Element next to it. Quality is one small menu; the "Engine" choice moved to Advanced. Recent captures show as thumbnails. A one-time tips card explains the shortcuts, and before the first capture a short note explains Sharp mode and Chrome's "debugging" bar.</li>
+<li><b>One-click mode</b> (optional): clicking the toolbar icon captures the full page right away.</li>
+<li><b>Progress on the toolbar icon</b> during a capture (…, 10%, 20%, …), and a red "!" if it fails.</li>
+<li><b>Result page:</b> a top bar with <b>Download</b> (remembers your format; ▾ for PNG, PDF, JPEG, WebP), <b>Copy image</b> and <b>Copy text</b>, and a ⋯ menu for text files, reading text in images, print-style PDF, the original page and delete. Format options open in a side panel only when you ask.</li>
+<li><b>Settings:</b> <b>General</b> (the everyday choices), <b>Shortcuts</b>, <b>Advanced</b> (every other option, grouped, with its own reset) and <b>Backup &amp; reset</b>. Plain names throughout: Sharp mode, Compatibility mode, Area, parts, page breaks, Read text in images.</li>
+<li>Friendlier error page with what to do next.</li>
+</ul>
+<h3>Crop and zoom</h3>
+<ul>
+<li><b>Crop</b> shows the whole capture with an adjustable box: eight handles, drag inside to move, or draw a new box. Dragging near the window edge scrolls, so long pages can be cropped. <b>Done cropping</b> applies it (Enter), Cancel discards it (Esc). After cropping, only the cropped area is shown, and <b>Edit</b> or <b>Remove</b> are one click away.</li>
+<li><b>Zoom:</b> Fit page, Fit width, a zoom slider (5%–800%), +/− buttons, actual pixels, keyboard (+, −, 0, F, 1, ⌘+/⌘−) and <b>trackpad pinch</b>, which zooms around the pointer.</li>
+</ul>
+<h3>PDF</h3>
+<ul>
+<li>New option: <b>Add page address and date</b>: the page's address, capture date and "Page n of N" at the bottom of every page, in a band that never overlaps the screenshot.</li>
+</ul>
+<h3>Defaults</h3>
+<ul>
+<li>Cookie banners and chat bubbles are now hidden by default (only in the screenshot; the page isn't changed). Settings you saved earlier are kept.</li>
+</ul>
+<h3>Tests</h3>
+<ul>
+<li>46 unit tests and 33 end-to-end tests, including crop with handles, auto-scroll on a 25,000 px page, pixel-exact crop export, zoom around the pinch point, the format menu, one-click mode, the progress badge and the PDF footer.</li>
+</ul>
+<h2>0.1.3 (2026-11-01)</h2>
+<ul>
+<li><b>Fixed: PDF pages with a different width.</b> With Orientation "Auto", each page chose portrait or landscape from its own slice, so the short last page of a long capture flipped to landscape and was drawn at a different width. All pages now share one layout (paper, orientation, scale) taken from the whole capture.</li>
+<li><b>Fixed: uneven empty space at the bottom of PDF pages.</b> Page breaks used to land anywhere in the bottom 15% of a page. PDF pages are now filled to the bottom: the break goes in the nearest gap between text lines above the page edge, so at most about one line is left empty. A figure is moved whole to the next page only if that leaves at most 10% of the page empty; otherwise the break goes through the figure at the page edge. Where no clean gap exists (dense multi-column text), the break crosses the fewest lines.</li>
+<li><b>Fixed: PDF pages could overflow.</b> Split lines dragged in the preview (for example for PNG parts) were reused for PDF pages even when a part was taller than a paper page, so the image ran off the page. Your split lines are kept, and extra breaks are added wherever a part wouldn't fit.</li>
+<li>Tests: a mixed-content pagination page (text sizes, figures from 90 to 1500 px, two columns, code, a table) checked on A4 and Letter with different margins for page size, image width, overflow, cut text lines and bottom gaps.</li>
+</ul>
+<h2>0.1.2 (2026-11-01)</h2>
+<ul>
+<li><b>Fixed: a click in the popup sometimes did nothing, so you had to click twice.</b> When Chrome had put the extension's background worker to sleep (after ~30 s idle), the popup sent "start capture" and closed before the worker woke, so Chrome dropped the message. The popup now waits for the background to accept the request before closing, and shows an error instead of closing silently if it can't.</li>
+<li><b>Fixed: the first capture could be lost at the permission prompt.</b> Chrome's "debugger" permission dialog can close the popup mid-click. The background now holds that capture (surviving a worker restart) and starts it once you choose Allow or Deny.</li>
+<li>Capture buttons stay disabled until the popup knows which tab it's on, instead of silently ignoring early clicks.</li>
+<li>Tests: new end-to-end tests drive the real toolbar popup with a sleeping service worker. The privacy monitor now pauses new workers until it's watching them, so requests made at worker start-up are recorded too (Chrome 156 starts workers faster than the monitor could attach).</li>
+<li><code>pnpm zip</code> now runs the full production build, including the remote-URL strip step, before zipping. WXT's own zip command skipped that step.</li>
+<li>README: install from a GitHub release zip, with an optional checksum check.</li>
+</ul>
+<h2>0.1.1 (2026-11-01)</h2>
+<ul>
+<li>Renamed the extension to <b>LocalFullPageCapture</b> to match the GitHub repository. This covers the name in Chrome, page titles, the popup and settings, the PDF "Producer"/"Creator" fields and the default download folder (<code>Downloads/LocalFullPageCapture</code>). If you saved settings before, your chosen download folder is kept.</li>
+<li>Internal identifiers (the IndexedDB database, message channel and injected script names) are unchanged, so existing captures and settings carry over.</li>
+<li>README rewritten with screenshots generated from a generic demo page (<code>pnpm docs:screenshots</code>).</li>
+</ul>
+<h2>0.1.0 — Phase 1 (2026-11-01)</h2>
+<p>First working version: screenshots, full-page capture, PNG/PDF export and OCR.</p>
+<h3>Capture</h3>
+<ul>
+<li>Four modes, each with a shortcut and a popup button: visible area (Alt+Shift+S), full page (Alt+Shift+F), region (Alt+Shift+R, auto-scrolls while dragging near an edge), element (Alt+Shift+E, with ↑/↓ to pick parent/child). Esc cancels any mode or a running capture.</li>
+<li>Engine A (CDP): re-renders the page at 1x/2x/3x/4x via the optional <code>debugger</code> permission and captures PNG tiles. The default "scroll tiles" strategy keeps fixed footers at the bottom; "beyond-viewport" tiling is available in Settings. The page's viewport size is preserved, and the override is always cleared and the debugger detached, including on cancel.</li>
+<li>Engine B (scroll-and-stitch): <code>captureVisibleTab</code> at native DPR, throttled to Chrome's quota with backoff. Overlaps are aligned by pixel-row matching.</li>
+<li>Page preparation (fully reverted afterwards): hidden scrollbars, paused animations/transitions/videos, hidden caret, eager lazy images with a scroll prepass and waits for images, fonts and network quiet; sticky headers shown once, hidden, or left as-is; fixed widgets shown on the first or last row only; optional cookie-banner and chat-widget hiding with editable selectors; cap for infinite-scroll pages, with a warning.</li>
+<li>Inner scroll containers are detected automatically (Gmail/Notion-style layouts), with "Choose scroll area" to override. Horizontal overflow can be captured with the full-width option.</li>
+<li>Friendly error for chrome://, Web Store and other protected pages.</li>
+</ul>
+<h3>Output</h3>
+<ul>
+<li>Master image kept as lossless PNG tiles in IndexedDB; never materialised, so captures can exceed canvas limits.</li>
+<li>Smart split: cuts avoid text lines and images using DOM layout data, falling back to the blankest row band (±15% of the target). Overlap 0/40/80 px. Split lines can be dragged in the preview.</li>
+<li>PNG export: hand-written encoder, 8-bit RGB (RGBA only when there is transparency), with a <code>pHYs</code> chunk at 96 × scale DPI. Multiple parts as separate files or a ZIP. JPEG/WebP only when chosen.</li>
+<li>PDF export: lossless Flate images (JPEG only with "Smaller file"), fit-to-width A4/Letter/Legal or continuous pages, margins, orientation, metadata (title, source URL, date, producer "LocalFullPageCapture"). An invisible word-by-word text layer (glyphless font + ToUnicode) makes text searchable and selectable. Vector PDF via <code>Page.printToPDF</code>.</li>
+<li>Filenames like <code>page-title_2026-11-01_1432_part-01-of-04.png</code>, from a template.</li>
+</ul>
+<h3>Text and OCR</h3>
+<ul>
+<li>DOM text layer: every visible word with its box, mapped through scroll, scale, sticky handling and stitching. Clipped and hidden text are excluded; same-origin iframes are included.</li>
+<li>Tesseract.js 7 OCR (LSTM, <code>eng</code> best_int) fully bundled, run in a Worker inside the offscreen document, for images, canvas, video, path-only SVG, cross-origin frames and CSS background images (or the whole image when a page has no DOM text). Preprocessing: upscale to ≥300 DPI, grayscale, polarity-independent background normalisation (handles dark mode and mixed panels), optional adaptive threshold, and per-region page segmentation mode.</li>
+<li>Copy all text, rectangle text selection in the preview, and .txt/.md export (headings and list items from the DOM).</li>
+</ul>
+<h3>UI</h3>
+<ul>
+<li>Popup with mode buttons, quality/engine, predicted output size, high-resolution engine prompt and recent captures.</li>
+<li>Preview page: fit/100%/200% pixel-exact zoom, pan, crop, text selection, draggable splits, size estimates, warnings, OCR status, and the export panel.</li>
+<li>Options page with every setting, plus JSON export/import. Light/dark theme.</li>
+</ul>
+<h3>Tests</h3>
+<ul>
+<li>28 unit tests (Vitest) and 21 end-to-end tests (Playwright, real Chrome with the unpacked extension). See README for the summary.</li>
+</ul>
+  </div>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="images/icon-32.png" width="22" height="22" alt="">LocalFullPageCapture</a>
+    <span class="grow"></span>
+    <a href="help.html">Help</a>
+    <a href="privacy.html">Privacy policy</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="https://github.com/varunshinde/LocalFullPageCapture">GitHub</a>
+  </div>
+</footer>
+</body>
+</html>

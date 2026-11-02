@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildPdf, fitLayout, pageForSegment } from '../../src/lib/pdf/build';
+import { buildPdf, fitLayout, FOOTER_PT, pageForSegment } from '../../src/lib/pdf/build';
 import { flateRgbImage } from '../../src/lib/pdf/image';
 import { buildGlyphlessFont } from '../../src/lib/pdf/glyphless';
 import type { Word } from '../../src/lib/types';
@@ -69,5 +69,25 @@ describe('pdf', () => {
     expect(hello.transform[5]).toBeCloseTo(112.5, 0);
     // Box spans to the next word (90px) for 'Hello ' (6 glyphs); pdf.js may report 'Hello' alone.
     expect(hello.width).toBeCloseTo((90 * 0.75 * [...hello.str].length) / 6, 0);
+  });
+
+  it('prints the page address and date in a footer band that never overlaps the image', async () => {
+    const o = { paper: 'a4', margins: 'none', orientation: 'portrait', dpi: 192 } as const;
+    expect(fitLayout(2000, 9000, { ...o, footer: true }).rowsPerPage).toBeLessThan(fitLayout(2000, 9000, o).rowsPerPage);
+    const W = 1600, H = 300;
+    const image = flateRgbImage(new Uint8Array(W * H * 4).fill(255), W, H);
+    const geo = pageForSegment(W, H, { ...o, paper: 'continuous', footer: true });
+    expect(geo.box.y).toBeCloseTo(FOOTER_PT);
+    expect(geo.heightPt).toBeCloseTo(geo.box.h + FOOTER_PT);
+    const url = 'https://example.com/a-very-long-path/that-keeps-going/and-going/until-it-no-longer-fits-on-the-page/index.html?q=1';
+    const bytes = await buildPdf([{ image, words: [], ...geo, footer: { left: url, right: 'Captured 2 Nov 2026, 14:32 · Page 1 of 1' } }], { title: 't', subject: 's', created: new Date(0) });
+    const { pages } = await pdfText(bytes);
+    const text = pages[0].items.map((i) => i.str).join(' ');
+    expect(text).toContain('Page 1 of 1');
+    expect(text).toContain('https://example.com/');
+    for (const it of pages[0].items) expect(it.transform[5]).toBeLessThan(FOOTER_PT);
+    const left = pages[0].items.find((i) => i.str.startsWith('https://'))!;
+    const right = pages[0].items.find((i) => i.str.includes('Page 1'))!;
+    expect(left.transform[4] + left.width).toBeLessThan(right.transform[4]);
   });
 });
