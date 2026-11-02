@@ -27,36 +27,11 @@ function startPopupCapture(req: CaptureRequest) {
     .catch((e) => reportOutcome({ ok: false, error: String((e as Error)?.message ?? e), code: 'error' }));
 }
 
-/**
- * A first capture that asked for the debugger permission. Chrome's permission
- * dialog can close the popup before it hears back, so the request is held here
- * (in session storage, in case the service worker sleeps while the dialog is
- * open) and started when the popup reports the decision or the permission is added.
- */
-const PENDING_KEY = 'pendingCapture';
-const PENDING_TTL_MS = 2 * 60_000;
-let releasing: Promise<void> = Promise.resolve();
-
-async function holdForPermission(req: CaptureRequest) {
-  await chrome.storage.session.set({ [PENDING_KEY]: { req, at: Date.now() } });
-}
-
-/** Serialised, so the popup's report and permissions.onAdded can't both start it. */
-function releasePending(): Promise<void> {
-  releasing = releasing.then(async () => {
-    const pending = (await chrome.storage.session.get(PENDING_KEY))[PENDING_KEY] as { req: CaptureRequest; at: number } | undefined;
-    if (!pending) return;
-    await chrome.storage.session.remove(PENDING_KEY);
-    if (Date.now() - pending.at < PENDING_TTL_MS) startPopupCapture(pending.req);
-  });
-  return releasing;
-}
-
 async function printPdf(id: string): Promise<string> {
   const rec = await getCapture(id);
   if (!rec?.sourceTabId) throw new Error('Capture not found.');
   if (!(await chrome.permissions.contains({ permissions: ['debugger'] }))) {
-    throw new Error('Vector PDF needs the optional "debugger" permission. Enable the high-resolution engine first.');
+    throw new Error('Print-style PDF needs Sharp mode, which Chrome has turned off for this extension. Reinstall it to restore Sharp mode.');
   }
   let tab: chrome.tabs.Tab;
   try {
@@ -75,14 +50,9 @@ async function handle(msg: BackgroundRequest | ContentRequest, sender: chrome.ru
   switch (msg.type) {
     case 'capture': {
       // Reply at once so the popup can close; errors are shown in a new tab like shortcut captures.
-      const req = { mode: msg.mode, tabId: msg.tabId, pickContainer: msg.pickContainer };
-      if (msg.afterPermission) await holdForPermission(req);
-      else startPopupCapture(req);
+      startPopupCapture({ mode: msg.mode, tabId: msg.tabId, pickContainer: msg.pickContainer });
       return { accepted: true };
     }
-    case 'permission-decided':
-      await releasePending();
-      return true;
     case 'cancel':
       return cancelActive();
     case 'content-cancel':
@@ -128,10 +98,6 @@ export function main() {
       (e) => sendResponse({ ok: false, error: String((e as Error)?.message ?? e) } satisfies Reply),
     );
     return true;
-  });
-
-  chrome.permissions.onAdded.addListener((p) => {
-    if (p.permissions?.includes('debugger')) void releasePending();
   });
 
   // Never open a welcome page or anything else on install.

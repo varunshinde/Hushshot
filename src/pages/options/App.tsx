@@ -58,7 +58,6 @@ const RESULT_KEYS: [string, string][] = [
 
 export function App() {
   const [s, setS] = useState<Settings | null>(null);
-  const [hasSharp, setHasSharp] = useState(false);
   const [commands, setCommands] = useState<chrome.commands.Command[]>([]);
   const [msg, setMsg] = useState('');
   const [tab, setTab] = useState<Tab>(() => {
@@ -68,7 +67,6 @@ export function App() {
 
   useEffect(() => {
     loadSettings().then(setS);
-    chrome.permissions.contains({ permissions: ['debugger'] }).then(setHasSharp);
     chrome.commands.getAll().then(setCommands);
     const onHash = () => {
       const h = location.hash.slice(1) as Tab;
@@ -151,19 +149,17 @@ export function App() {
           <>
             <h1>General</h1>
             <Group title="Capturing">
-              <Row name="Sharp mode" help="Re-draws the page at 2× to 4× so text stays crisp. While it captures, Chrome shows a bar saying this extension is debugging the tab.">
-                {hasSharp ? (
-                  <span class="row">
-                    <span class="ok">Allowed</span>
-                    <button onClick={async () => setHasSharp(!(await chrome.permissions.remove({ permissions: ['debugger'] })))}>Turn off</button>
-                  </span>
-                ) : (
-                  <button class="primary" onClick={async () => setHasSharp(await chrome.permissions.request({ permissions: ['debugger'] }))}>
-                    Allow Sharp mode
-                  </button>
-                )}
+              <Row id="sharp" name="Sharp mode" help="Draws the page again at 2× to 4× so text stays crisp. While it captures, Chrome shows a bar saying this extension is debugging the tab; it closes when the capture ends. Off: captures use your screen’s resolution.">
+                <input
+                  id="sharp"
+                  type="checkbox"
+                  role="switch"
+                  class="switch"
+                  checked={s.engine !== 'scroll'}
+                  onChange={(e) => set({ engine: e.currentTarget.checked ? 'auto' : 'scroll' })}
+                />
               </Row>
-              <Row id="quality" name="Quality" help={hasSharp ? 'Higher is sharper and larger. Sharp (2×) suits most pages.' : 'Needs Sharp mode. Without it, captures use your screen’s resolution.'}>
+              <Row id="quality" name="Quality" help={s.engine !== 'scroll' ? 'Higher is sharper and larger. Sharp (2×) suits most pages.' : 'Turn on Sharp mode to choose. Without it, captures use your screen’s resolution.'}>
                 {sel('quality', ([1, 2, 3, 4] as const).map((q) => [q, QUALITY_LABELS[q]]), true)}
               </Row>
               <Row id="toolbarClick" name="Clicking the toolbar icon">
@@ -261,7 +257,7 @@ export function App() {
             <p class="muted intro">The defaults work for most pages. Change these if a site captures oddly or you need a specific output.</p>
 
             <Group title="Capture method">
-              <Row id="engine" name="Method" help="Automatic uses Sharp mode when it’s allowed. Compatibility mode scrolls the page and stitches screenshots at your screen’s resolution.">
+              <Row id="engine" name="Method" help="Automatic uses Sharp mode and falls back to Compatibility mode if Sharp mode isn’t available. Compatibility mode scrolls the page and stitches screenshots at your screen’s resolution; the Sharp mode switch in General sets this too.">
                 {sel('engine', [
                   ['auto', 'Automatic'],
                   ['cdp', 'Sharp mode only'],

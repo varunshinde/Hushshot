@@ -8,7 +8,8 @@ import { ExtensionNetworkMonitor } from './netmon';
 
 export const BASE = `http://127.0.0.1:${FIXTURE_PORT}`;
 const CHROME_OWN_HOSTS = /^(https?:\/\/)?([a-z0-9-]+\.)*(google\.com|gstatic\.com|googleapis\.com|gvt1\.com|googleusercontent\.com)(:\d+)?(\/|$)/;
-const EXT_PATH = resolve(import.meta.dirname, '../../dist/chrome-mv3-e2e');
+// E2E_EXT_PATH lets a test load another build (e.g. the production one).
+const EXT_PATH = process.env.E2E_EXT_PATH ? resolve(process.env.E2E_EXT_PATH) : resolve(import.meta.dirname, '../../dist/chrome-mv3-e2e');
 
 // Report service-worker network activity too (needed for the privacy checks).
 process.env.PW_EXPERIMENTAL_SERVICE_WORKER_NETWORK_EVENTS = '1';

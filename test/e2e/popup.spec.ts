@@ -57,30 +57,6 @@ for (const when of ['as soon as it renders', 'after a pause']) {
   });
 }
 
-test('a capture held for the permission prompt survives the popup closing and the worker sleeping', async ({ ext }) => {
-  const demo = await ext.open('demo.html');
-  const hooks = await ext.hooks();
-  const reply = await hooks.evaluate(
-    (tabId) => chrome.runtime.sendMessage({ target: 'background', type: 'capture', mode: 'visible', tabId, afterPermission: true }),
-    demo.tabId,
-  );
-  expect(reply).toEqual({ ok: true, value: { accepted: true } });
-  // Nothing starts until the decision arrives.
-  await demo.page.waitForTimeout(1500);
-  expect(ext.context.pages().some((p) => p.url().includes('preview.html?id='))).toBe(false);
-
-  await sleepServiceWorker(ext, demo.page);
-  await demo.page.bringToFront();
-  const opened = previewOpened(ext);
-  await hooks.evaluate(() => chrome.runtime.sendMessage({ target: 'background', type: 'permission-decided' }));
-  await opened;
-
-  // Released once only: a second decision doesn't start another capture.
-  await hooks.evaluate(() => chrome.runtime.sendMessage({ target: 'background', type: 'permission-decided' }));
-  await demo.page.waitForTimeout(1500);
-  expect(ext.context.pages().filter((p) => p.url().includes('preview.html')).length).toBe(2); // hooks page + one capture
-});
-
 test('one-click mode: the toolbar icon captures straight away instead of opening the menu', async ({ ext }) => {
   const popupOf = () => ext.sw.evaluate(() => chrome.action.getPopup({}));
   await expect.poll(popupOf).toMatch(/popup\.html$/);

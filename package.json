@@ -12,10 +12,11 @@
     "zip": "pnpm build && cd dist/chrome-mv3 && rm -f ../LocalFullPageCapture-v$npm_package_version.zip && zip -qrX ../LocalFullPageCapture-v$npm_package_version.zip .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "pnpm build:e2e && playwright test",
+    "test:e2e": "pnpm build:e2e && playwright test && pnpm test:prod",
     "postinstall": "wxt prepare",
     "docs:screenshots": "pnpm build:e2e && DOCS=1 playwright test docs && node scripts/build-site.mjs",
-    "docs:site": "node scripts/build-site.mjs"
+    "docs:site": "node scripts/build-site.mjs",
+    "test:prod": "pnpm build && E2E_EXT_PATH=dist/chrome-mv3 playwright test prod"
   },
   "dependencies": {
     "@tesseract.js-data/eng": "1.0.0",

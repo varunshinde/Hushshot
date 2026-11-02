@@ -137,7 +137,7 @@ Chrome loads the extension from that folder, so keep it where it is. After pulli
 
 Press **Esc** to cancel at any time. To change the shortcuts, go to `chrome://extensions/shortcuts`. Prefer one click? Set **Clicking the toolbar icon** to *Captures the full page right away* in Settings.
 
-**Sharp mode:** your first capture asks Chrome to allow it (the optional *debugger* permission). It re-draws the page at 2×–4× so text stays crisp. While it captures, Chrome shows a bar saying the extension is debugging the tab; it closes when the capture ends. If you decline, captures use your screen's resolution.
+**Sharp mode** re-draws the page at 2×–4× so text stays crisp. It uses Chrome's *debugger* permission, which is why Chrome's install dialog warns that the extension can "read and change all your data on all websites": the debugger is only attached to the tab you're capturing, only during the capture. While it captures, Chrome shows a bar saying the extension is debugging the tab; it closes when the capture ends. Turn Sharp mode off in Settings to use your screen's resolution instead.
 
 **Pages with their own scroll area** (Gmail, Notion and similar apps) are detected automatically. If the wrong part scrolls, use **Pick scroll area…** in the popup.
 
@@ -154,7 +154,7 @@ Press **Esc** to cancel at any time. To change the shortcuts, go to `chrome://ex
 
 - **No network requests, ever.** The OCR engine, WebAssembly and language model are bundled. The build fails if any remote URL is left in the code.
 - **No remote code.** No `eval` and no downloaded scripts. The Content Security Policy is `script-src 'self' 'wasm-unsafe-eval'`.
-- **Minimal permissions.** No host permissions: LocalFullPageCapture only touches a tab when you click its icon or press a shortcut. Every permission is explained in [PERMISSIONS.md](PERMISSIONS.md).
+- **Minimal permissions.** No host permissions: LocalFullPageCapture only touches a tab when you click its icon or press a shortcut. Sharp mode needs Chrome's *debugger* permission, which brings a broad-sounding install warning; it's only used on the tab you capture. Every permission is explained in [PERMISSIONS.md](PERMISSIONS.md).
 - **Checked by tests.** The end-to-end tests record every request from every part of the extension and fail on anything that isn't a bundled file.
 - Captures are stored only in the extension's local storage in your Chrome profile.
 
@@ -177,7 +177,8 @@ pnpm docs:screenshots
 ```
 
 - `pnpm test` runs the unit tests (Vitest).
-- `pnpm test:e2e` builds a test variant (`dist/chrome-mv3-e2e`) and runs Playwright against your installed **Google Chrome** with the extension loaded. That variant adds `<all_urls>` and makes `debugger` required, because automation can't click the toolbar or accept permission prompts. Don't load it for everyday use.
+- `pnpm test:e2e` builds a test variant (`dist/chrome-mv3-e2e`) and runs Playwright against your installed **Google Chrome** with the extension loaded. That variant adds `<all_urls>`, because automation can't click the toolbar icon to grant access to a tab. Don't load it for everyday use.
+- `pnpm test:prod` loads the real production build (`dist/chrome-mv3`) and checks what Chrome actually grants it, such as Sharp mode's `debugger` permission.
 - The E2E tests run Chrome headful with its window placed off-screen. Set `E2E_HEADLESS=1` to run headless where your setup allows it.
 - `pnpm docs:screenshots` regenerates the README images in `docs/images`.
 - `pnpm zip` builds the production extension (including the step that strips remote URLs) and zips it to `dist/LocalFullPageCapture-v<version>.zip`, ready to attach to a GitHub release.
@@ -231,7 +232,7 @@ Only bundled languages are offered; nothing is downloaded at runtime. To add one
 
 ## Known limitations
 
-- **Resolution:** the Quality setting needs Sharp mode (the optional debugger permission). Without it, captures use your screen's pixel ratio.
+- **Resolution:** the Quality setting needs Sharp mode. With Sharp mode off, captures use your screen's pixel ratio.
 - **DevTools device emulation** is reset by a Sharp-mode capture if it was turned on. Chrome drops those settings when the capture finishes, so they can't be put back.
 - **Sticky and fixed elements** are detected heuristically. Elements that a script makes sticky only while you scroll may still repeat.
 - **Animated GIFs** keep playing during capture. CSS animations, transitions and videos are paused.

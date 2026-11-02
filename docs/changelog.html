@@ -49,9 +49,14 @@
 <ul>
 <li>Cookie banners and chat bubbles are now hidden by default (only in the screenshot; the page isn't changed). Settings you saved earlier are kept.</li>
 </ul>
+<h3>Fixed</h3>
+<ul>
+<li><b>Sharp mode never turned on.</b> It relied on Chrome's <code>debugger</code> permission being optional and requested on first use, but Chrome doesn't allow <code>debugger</code> as an optional permission: it was dropped at install and every "Allow Sharp mode" request failed silently. Captures fell back to your screen's resolution, so on Retina screens they were still 2×, but 3× and 4× had no effect. <code>debugger</code> is now requested at install, so Sharp mode works out of the box; Chrome's install dialog shows a broad warning for it (see PERMISSIONS.md). Settings → General has a simple Sharp mode switch instead of a permission button. The v0.2.0 download was replaced with this fix on 2 November 2026; if you installed it earlier, download it again and reload the extension.</li>
+<li>A unit test now rejects any permission Chrome won't accept as optional, and <code>pnpm test:prod</code> loads the real production build to check Sharp mode's permission is granted.</li>
+</ul>
 <h3>Tests</h3>
 <ul>
-<li>46 unit tests and 33 end-to-end tests, including crop with handles, auto-scroll on a 25,000 px page, pixel-exact crop export, zoom around the pinch point, the format menu, one-click mode, the progress badge and the PDF footer.</li>
+<li>49 unit tests, 32 end-to-end tests and 3 production-build checks, including crop with handles, auto-scroll on a 25,000 px page, pixel-exact crop export, zoom around the pinch point, the format menu, one-click mode, the progress badge and the PDF footer.</li>
 </ul>
 <h2>0.1.3 (2026-11-01)</h2>
 <ul>

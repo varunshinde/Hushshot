@@ -1,14 +1,14 @@
 import { defineConfig } from 'wxt';
 import preact from '@preact/preset-vite';
 import { resolve } from 'node:path';
+import { OPTIONAL_PERMISSIONS, PERMISSIONS } from './src/lib/manifest-permissions';
 
 /**
  * E2E builds (`wxt build --mode e2e`) differ from production only in the
  * manifest: Playwright cannot press extension shortcuts or click the toolbar
- * icon, so activeTab is never granted and the optional `debugger` permission
- * can't be accepted from a prompt. The test build therefore lists `debugger`
- * and `<all_urls>` as required (fixtures are served from 127.0.0.1 only). Production keeps the
- * minimal set documented in PERMISSIONS.md.
+ * icon, so activeTab is never granted. The test build therefore adds
+ * `<all_urls>` (fixtures are served from 127.0.0.1 only). Permissions are
+ * otherwise identical; see PERMISSIONS.md.
  */
 export default defineConfig({
   srcDir: 'src',
@@ -25,17 +25,8 @@ export default defineConfig({
       name: e2e ? 'LocalFullPageCapture (E2E)' : 'LocalFullPageCapture',
       description: 'Private, offline screenshots with searchable PDF export and on-device OCR. No network, no telemetry.',
       minimum_chrome_version: '120',
-      permissions: [
-        'activeTab',
-        'scripting',
-        'storage',
-        'unlimitedStorage',
-        'offscreen',
-        'downloads',
-        'clipboardWrite',
-        ...(e2e ? ['debugger'] : []),
-      ],
-      optional_permissions: e2e ? [] : ['debugger'],
+      permissions: PERMISSIONS,
+      ...(OPTIONAL_PERMISSIONS.length ? { optional_permissions: OPTIONAL_PERMISSIONS } : {}),
       // captureVisibleTab needs activeTab or <all_urls>; tests can't grant activeTab.
       host_permissions: e2e ? ['<all_urls>'] : [],
       content_security_policy: {

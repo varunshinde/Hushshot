@@ -15,7 +15,6 @@ interface Measure {
   root: string;
 }
 
-const ASKED_KEY = 'debuggerAsked';
 const TIPS_KEY = 'tipsSeen';
 
 const COMMAND_FOR: Record<CaptureMode, string> = {
@@ -35,8 +34,6 @@ export function App() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [tab, setTab] = useState<chrome.tabs.Tab | null>(null);
   const [measure, setMeasure] = useState<Measure | null>(null);
-  const [hasDebugger, setHasDebugger] = useState(false);
-  const [asked, setAsked] = useState(true);
   const [tipsSeen, setTipsSeen] = useState(true);
   const [shortcuts, setShortcuts] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
@@ -47,10 +44,7 @@ export function App() {
   useEffect(() => {
     (async () => {
       setSettings(await loadSettings());
-      setHasDebugger(await chrome.permissions.contains({ permissions: ['debugger'] }));
-      const flags = await chrome.storage.local.get([ASKED_KEY, TIPS_KEY]);
-      setAsked(!!flags[ASKED_KEY]);
-      setTipsSeen(!!flags[TIPS_KEY]);
+      setTipsSeen(!!(await chrome.storage.local.get(TIPS_KEY))[TIPS_KEY]);
       chrome.commands.getAll().then((cmds) => setShortcuts(Object.fromEntries(cmds.map((c) => [c.name ?? '', c.shortcut ?? '']))));
       // E2E builds only: ?tab=<id> targets a tab, so the popup can be opened as a page in tests.
       const forced = import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('tab')) : 0;
@@ -86,38 +80,19 @@ export function App() {
   if (!settings) return <div class="pad muted">Loading…</div>;
 
   const update = async (patch: Partial<Settings>) => setSettings(await saveSettings(patch));
-  const wantsSharp = settings.engine !== 'scroll';
-  const usesSharp = wantsSharp && hasDebugger;
+  const usesSharp = settings.engine !== 'scroll';
   const scale = usesSharp ? settings.quality : measure?.dpr ?? 1;
   const est = measure ? predictSize(measure.width, Math.min(measure.height, settings.maxHeightCss), scale) : null;
   const disabled = !!error || !tab || starting;
-
-  const enableSharp = async () => {
-    await chrome.storage.local.set({ [ASKED_KEY]: true });
-    setAsked(true);
-    setHasDebugger(await chrome.permissions.request({ permissions: ['debugger'] }));
-  };
 
   const capture = async (mode: CaptureMode, pickContainer = false) => {
     if (disabled || !tab?.id) return;
     setStarting(true);
     setStartError(null);
-    const req = { target: 'background', type: 'capture', mode, tabId: tab.id, pickContainer } as const;
     try {
-      // First capture: offer Sharp mode (needs a user gesture, so it happens here).
-      const ask = wantsSharp && !hasDebugger && !(await chrome.storage.local.get(ASKED_KEY))[ASKED_KEY];
-      if (ask) {
-        // Chrome's permission dialog can close the popup, so the background holds the
-        // capture and starts it once the choice is made, even if this popup is gone.
-        await chrome.storage.local.set({ [ASKED_KEY]: true });
-        await sendToBackground({ ...req, afterPermission: true });
-        await chrome.permissions.request({ permissions: ['debugger'] }).catch(() => false);
-        await sendToBackground({ target: 'background', type: 'permission-decided' });
-      } else {
-        // Wait until the background accepts the request: a message sent from a popup that
-        // closes straight away is dropped while Chrome wakes a sleeping service worker.
-        await sendToBackground(req);
-      }
+      // Wait until the background accepts the request: a message sent from a popup that
+      // closes straight away is dropped while Chrome wakes a sleeping service worker.
+      await sendToBackground({ target: 'background', type: 'capture', mode, tabId: tab.id, pickContainer });
       window.close();
     } catch (e) {
       setStarting(false);
@@ -157,6 +132,7 @@ export function App() {
               Press <kbd>Esc</kbd> to cancel a capture.
             </li>
             <li>Files are saved to Downloads{settings.downloadFolder ? `/${settings.downloadFolder}` : ''}.</li>
+            {usesSharp && <li>While capturing, Chrome shows a bar saying this extension is debugging the tab. That's how Sharp mode draws the page at 2×–4×; it closes when the capture ends.</li>}
           </ul>
           <button onClick={dismissTips}>Got it</button>
         </section>
@@ -170,12 +146,6 @@ export function App() {
       {startError && (
         <p class="notice err" role="alert">
           {startError}
-        </p>
-      )}
-
-      {wantsSharp && !hasDebugger && !asked && !error && (
-        <p class="notice info sharp-note">
-          Your first capture asks Chrome to allow <b>Sharp mode</b> for 2×–4× quality. While it captures, Chrome shows a bar saying this extension is debugging the tab. That's how Sharp mode works, and the bar closes when the capture ends.
         </p>
       )}
 
@@ -214,12 +184,10 @@ export function App() {
               </option>
             ))}
           </select>
-        ) : wantsSharp ? (
-          <button class="link" onClick={enableSharp}>
-            Screen ({measure?.dpr ?? 1}×) · Allow Sharp mode
-          </button>
         ) : (
-          <span class="muted">Screen ({measure?.dpr ?? 1}×)</span>
+          <button class="link" onClick={() => update({ engine: 'auto' })} title="Sharp mode is off in Settings">
+            Screen ({measure?.dpr ?? 1}×) · Turn on Sharp mode
+          </button>
         )}
       </div>
       {measure && measure.root !== 'page' && <p class="muted small">This page scrolls inside a panel ({measure.root}). It's captured automatically.</p>}

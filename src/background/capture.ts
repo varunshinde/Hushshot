@@ -53,9 +53,7 @@ async function pickEngine(s: Settings): Promise<{ engine: CaptureEngine; note?: 
   return {
     engine: new ScrollEngine(),
     note:
-      s.engine === 'cdp'
-        ? 'The high-resolution engine needs the optional "debugger" permission. Used scroll-and-stitch at native resolution instead — enable it from the popup.'
-        : 'Captured with scroll-and-stitch at your display\'s native resolution. Enable the high-resolution engine in the popup for 2x–4x output.',
+      'Sharp mode isn\'t available (Chrome has turned off its "debugger" permission for this extension), so this was captured at your screen\'s resolution. Reinstall the extension to restore Sharp mode.',
   };
 }
 

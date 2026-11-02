@@ -128,7 +128,7 @@
         <li><code>storage</code><span>Your settings and captures, kept in your Chrome profile.</span></li>
         <li><code>downloads</code><span>Saves the files you choose to download.</span></li>
         <li><code>clipboardWrite</code><span>Copy image and Copy text. It never reads your clipboard.</span></li>
-        <li><span><code>debugger</code> <span class="muted">(optional)</span></span><span>Sharp mode. Asked for the first time you capture, and only used during a capture.</span></li>
+        <li><code>debugger</code><span>Sharp mode. Only attached to the tab you capture, only while capturing. It's why Chrome's install dialog mentions reading and changing data on websites.</span></li>
       </ul>
     </div>
   </section>
@@ -168,7 +168,7 @@
           <ol>
             <li>Download the latest <a href="https://github.com/varunshinde/LocalFullPageCapture/releases/latest">LocalFullPageCapture zip</a> and unzip it.</li>
             <li>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b> (top right).</li>
-            <li>Click <b>Load unpacked</b> and choose the unzipped folder.</li>
+            <li>Click <b>Load unpacked</b> and choose the unzipped folder. Chrome lists what Sharp mode's permission allows (see the FAQ).</li>
             <li>Pin it: click the puzzle-piece icon in the toolbar, then the pin next to LocalFullPageCapture.</li>
           </ol>
         </div>
@@ -192,6 +192,7 @@
         <h2>FAQ</h2>
       </div>
       <details class="faq"><summary>Why does Chrome say the extension is "debugging" the tab?</summary><p>That's how Sharp mode works. It asks Chrome to draw the page again at a higher resolution, which uses Chrome's debugging interface. The bar appears only while a capture runs and closes when it ends. If you'd rather not see it, turn Sharp mode off in Settings; captures then use your screen's resolution.</p></details>
+      <details class="faq"><summary>Why does Chrome warn that it can "read and change all your data"?</summary><p>Sharp mode uses Chrome's debugger permission, and Chrome's install dialog describes everything that permission could allow. LocalFullPageCapture only attaches it to the tab you're capturing, only during the capture you started, and makes no network requests. You can turn Sharp mode off in Settings.</p></details>
       <details class="faq"><summary>Is anything uploaded?</summary><p>No. Captures, text recognition and file exports all happen on your computer. The extension doesn't make network requests at all, and its automated tests check that on every change.</p></details>
       <details class="faq"><summary>Where are my files saved?</summary><p>In your Downloads folder, inside a LocalFullPageCapture folder. You can change the folder and the file name pattern in Settings.</p></details>
       <details class="faq"><summary>A page didn't capture correctly. What can I try?</summary><p>For app pages that scroll inside a panel, use <b>Pick scroll area…</b> in the popup. If parts repeat or look odd, try Settings → Advanced → Method → Compatibility mode. Chrome doesn't allow extensions to capture its own pages (like <code>chrome://</code> pages or the Web Store).</p></details>
