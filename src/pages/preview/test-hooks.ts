@@ -1,7 +1,7 @@
 import { exportImages, exportPdf, planSplits, type ExportFormat } from '../../lib/export/exporter';
 import { TileSource } from '../../lib/image/render';
 import { loadSettings, sanitizeSettings, type Settings } from '../../lib/settings';
-import { getBlob, getCapture } from '../../lib/storage/db';
+import { getBlob, getCapture, updateCapture } from '../../lib/storage/db';
 import { toMarkdown, toPlainText } from '../../lib/text/words';
 
 /** E2E-only hooks (compiled out of production builds). */
@@ -21,6 +21,8 @@ async function ctx(id: string, patch: Partial<Settings> = {}) {
 
 export const previewTestHooks = {
   getRecord: (id: string) => getCapture(id),
+  /** Same as dragging split lines in the preview. */
+  setSplits: (id: string, cuts: number[] | null) => updateCapture(id, (r) => void (r.splits = cuts)),
   async waitFor(id: string, ocr = false, timeoutMs = 120000) {
     const end = Date.now() + timeoutMs;
     for (;;) {

@@ -31,6 +31,20 @@ describe('pdf', () => {
     expect(c.widthPt).toBeCloseTo(375);
   });
 
+  it('keeps every page of a long capture in the document layout, including a short last page', () => {
+    const o = { paper: 'a4', margins: 'normal', orientation: 'auto', dpi: 192 } as const;
+    const doc = fitLayout(2000, 20000, o);
+    const middle = pageForSegment(2000, doc.rowsPerPage, o, doc);
+    const last = pageForSegment(2000, 300, o, doc); // wider than tall on its own
+    for (const p of [middle, last]) {
+      expect(p.widthPt).toBeCloseTo(595.28);
+      expect(p.heightPt).toBeCloseTo(841.89);
+      expect(p.box.w).toBeCloseTo(595.28 - 72);
+      expect(p.box.y + p.box.h).toBeCloseTo(841.89 - 36);
+    }
+    expect(middle.box.y).toBeGreaterThanOrEqual(36 - 1e-6);
+  });
+
   it('writes an invisible text layer aligned with the image', async () => {
     const W = 400, H = 200;
     const rgba = new Uint8Array(W * H * 4).fill(255);

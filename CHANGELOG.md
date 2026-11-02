@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- **Fixed: PDF pages with a different width.** With Orientation "Auto", each page chose portrait or landscape from its own slice, so the short last page of a long capture flipped to landscape and was drawn at a different width. All pages now share one layout (paper, orientation, scale) taken from the whole capture.
+- **Fixed: uneven empty space at the bottom of PDF pages.** Page breaks used to land anywhere in the bottom 15% of a page. PDF pages are now filled to the bottom: the break goes in the nearest gap between text lines above the page edge, so at most about one line is left empty. A figure is moved whole to the next page only if that leaves at most 10% of the page empty; otherwise the break goes through the figure at the page edge. Where no clean gap exists (dense multi-column text), the break crosses the fewest lines.
+- **Fixed: PDF pages could overflow.** Split lines dragged in the preview (for example for PNG parts) were reused for PDF pages even when a part was taller than a paper page, so the image ran off the page. Your split lines are kept, and extra breaks are added wherever a part wouldn't fit.
+- Tests: a mixed-content pagination page (text sizes, figures from 90 to 1500 px, two columns, code, a table) checked on A4 and Letter with different margins for page size, image width, overflow, cut text lines and bottom gaps.
+
 ## 0.1.2 (2026-11-01)
 
 - **Fixed: a click in the popup sometimes did nothing, so you had to click twice.** When Chrome had put the extension's background worker to sleep (after ~30 s idle), the popup sent "start capture" and closed before the worker woke, so Chrome dropped the message. The popup now waits for the background to accept the request before closing, and shows an error instead of closing silently if it can't.

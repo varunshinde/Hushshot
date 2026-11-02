@@ -1,6 +1,6 @@
 import { readPixels, renderArea, rowEnergyFrom, type TileSource } from '../image/render';
-import { computeSplits, segmentsFromCuts, type Segment } from '../image/split';
-import { fitLayout, pageForSegment, type PdfImage, type PdfPageInput } from '../pdf/build';
+import { computeSplits, fitCutsToCapacity, paginate, segmentsFromCuts, type Segment } from '../image/split';
+import { fitLayout, pageForSegment, type FitLayout, type PdfImage, type PdfPageInput } from '../pdf/build';
 import type { Settings } from '../settings';
 import { lineIntervals, wordsForArea } from '../text/words';
 import type { CaptureRecord, Interval, Rect } from '../types';
@@ -29,12 +29,23 @@ export function localForbidden(rec: CaptureRecord, area: Rect): Interval[] {
     .filter(([a, b]) => b > 0 && a < area.height);
 }
 
-/** Segment height target for a format (PDF fit-to-width: one paper page). */
-export function segmentTarget(rec: CaptureRecord, s: Settings, format: ExportFormat): { target: number; hard: boolean } {
+/** Text line boxes relative to the export area (DOM and OCR words). */
+function localLines(rec: CaptureRecord, area: Rect): Interval[] {
+  return lineIntervals(rec.words)
+    .map(([a, b]) => [a - area.y, b - area.y] as Interval)
+    .filter(([a, b]) => b > 0 && a < area.height);
+}
+
+/** One page layout for the whole PDF, so every page has the same size, orientation and scale. */
+export function pdfLayout(rec: CaptureRecord, s: Settings): FitLayout {
   const area = exportArea(rec);
+  return fitLayout(area.width, area.height, { paper: s.pdfPaper, margins: s.pdfMargins, orientation: s.pdfOrientation, dpi: rec.dpi });
+}
+
+/** Segment height target for a format (PDF fit-to-width: one paper page, less the overlap). */
+export function segmentTarget(rec: CaptureRecord, s: Settings, format: ExportFormat): { target: number; hard: boolean } {
   if (format === 'pdf' && s.pdfPaper !== 'continuous') {
-    const l = fitLayout(area.width, area.height, { paper: s.pdfPaper, margins: s.pdfMargins, orientation: s.pdfOrientation, dpi: rec.dpi });
-    return { target: Math.max(50, l.rowsPerPage - s.segmentOverlap), hard: true };
+    return { target: Math.max(50, pdfLayout(rec, s).rowsPerPage - s.segmentOverlap), hard: true };
   }
   return { target: s.maxSegmentHeight, hard: false };
 }
@@ -43,17 +54,25 @@ export async function planSplits(rec: CaptureRecord, tiles: TileSource, s: Setti
   const area = exportArea(rec);
   const { target, hard } = segmentTarget(rec, s, format);
   const H = Math.round(area.height);
+  const energy = rowEnergyFrom(tiles, rec.placements, area);
   let cuts: number[];
   let methods: string[] = [];
-  if (rec.splits) {
+  if (hard) {
+    // Fixed-size pages: fill each page and break between text lines (see paginate).
+    const lines = localLines(rec, area);
+    const objects = localForbidden(rec, area);
+    const breaks = async (y0: number, y1: number) => {
+      const shift = (list: Interval[]) => list.map(([a, b]) => [a - y0, b - y0] as Interval).filter(([a, b]) => b > 0 && a < y1 - y0);
+      const r = await paginate(y1 - y0, shift(lines), shift(objects), { capacity: target }, (a, b) => energy(a + y0, b + y0));
+      methods.push(...r.methods);
+      return r.cuts.map((c) => c + y0);
+    };
+    // Split lines the user placed are kept, with extra breaks wherever a part wouldn't fit a page.
+    cuts = rec.splits ? await fitCutsToCapacity(H, rec.splits, s.segmentOverlap, breaks, target + s.segmentOverlap) : await breaks(0, H);
+  } else if (rec.splits) {
     cuts = rec.splits.filter((c) => c > 0 && c < H);
   } else {
-    const r = await computeSplits(
-      H,
-      localForbidden(rec, area),
-      { target, maxFrac: hard ? 1 : 1.15, hardMax: hard ? target : 16000 },
-      rowEnergyFrom(tiles, rec.placements, area),
-    );
+    const r = await computeSplits(H, localForbidden(rec, area), { target, maxFrac: 1.15, hardMax: 16000 }, energy);
     cuts = r.cuts;
     methods = r.methods;
   }
@@ -115,6 +134,7 @@ export async function exportPdf(
 ): Promise<ExportedFile> {
   const pages: PdfPageInput[] = [];
   const layout = { paper: s.pdfPaper, margins: s.pdfMargins, orientation: s.pdfOrientation, dpi: rec.dpi };
+  const doc = pdfLayout(rec, s);
   const n = plan.segments.length;
   for (let i = 0; i < n; i++) {
     const rect = segmentRect(plan.area, plan.segments[i]);
@@ -128,7 +148,7 @@ export async function exportPdf(
       const data = await runExportJob({ op: 'flate', rgba: px.data.buffer as ArrayBuffer, width: px.width, height: px.height }, [px.data.buffer]);
       image = { kind: 'flate-rgb', width: canvas.width, height: canvas.height, data };
     }
-    pages.push({ image, words: wordsForArea(rec.words, rect), ...pageForSegment(canvas.width, canvas.height, layout) });
+    pages.push({ image, words: wordsForArea(rec.words, rect), ...pageForSegment(canvas.width, canvas.height, layout, doc) });
     onProgress?.(((i + 1) / n) * 0.9);
   }
   const bytes = await runExportJob(

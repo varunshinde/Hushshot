@@ -18,6 +18,10 @@ test('write sample outputs', async ({ ext }) => {
   const t = await ext.text(a.id!);
   save('article.md', t.md);
 
+  const paged = await ext.open('paged.html');
+  const pg = await ext.capture(paged.tabId, { mode: 'full', settings: { quality: 2, ocrMode: 'demand' } });
+  save('paged-a4-normal.pdf', (await ext.exportPdf(pg.id!, { pdfPaper: 'a4', pdfMargins: 'normal', pdfSmaller: true })).pdf);
+
   const sticky = await ext.open('sticky.html');
   const s = await ext.capture(sticky.tabId, { mode: 'full', settings: { quality: 2, ocrMode: 'demand' } });
   save('sticky-2x.png', (await ext.exportPng(s.id!, { maxSegmentHeight: 16000 })).files[0].png);

@@ -124,7 +124,7 @@ Press **Esc** to cancel at any time. To change the shortcuts, go to `chrome://ex
 ### Export options
 
 - **PNG:** lossless, with the correct DPI saved in the file. Long pages split into parts at points that don't cut through text or images, and you can drag the split lines yourself.
-- **PDF:** fit to A4, Letter or Legal width, or one continuous page, with searchable text. **Vector PDF (print)** is also available.
+- **PDF:** fit to A4, Letter or Legal width, or one continuous page, with searchable text. Every page has the same width, and each page is filled to the bottom with the break placed between lines of text, so lines are never cut and gaps stay small. **Vector PDF (print)** is also available.
 - **JPEG / WebP:** only if you choose them, for smaller files.
 - **Text:** copy all text, export `.txt` or `.md` (headings and lists kept), or select an area to copy.
 

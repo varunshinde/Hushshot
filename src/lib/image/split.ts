@@ -130,6 +130,124 @@ export async function computeSplits(
   return { cuts, methods };
 }
 
+/** Highest whole row in [lo, hi] that cuts no interval of `merged` (disjoint, sorted), or null. */
+export function highestSafe(hi: number, lo: number, merged: Interval[]): number | null {
+  // If `hi` falls inside an interval, its top edge is the next candidate up (rounded down to a whole row).
+  let y = hi;
+  for (let moved = true; moved && y >= lo; ) {
+    moved = false;
+    for (const [a, b] of merged) {
+      if (a >= y) break;
+      if (y > a && y < b) {
+        y = Math.floor(a);
+        moved = true;
+        break;
+      }
+    }
+  }
+  return y >= lo ? y : null;
+}
+
+export interface PaginateOptions {
+  /** Image rows that fit on one page. Pages never exceed this. */
+  capacity: number;
+  /** How far up (share of a page) to look for a break between text lines. Default 0.2. */
+  maxGapFrac?: number;
+  /** Largest empty share of a page allowed to move a figure whole to the next page. Default 0.1. */
+  keepWholeFrac?: number;
+}
+
+/**
+ * Page breaks for fixed-size pages (PDF fit-to-width). Each page is filled as
+ * far as possible: the break goes in the nearest gap between text lines at or
+ * above the page bottom, so the space left over is at most about one line.
+ *
+ * - `lines`: text line boxes. A break never passes through one if any clean row
+ *   exists within `maxGapFrac` of the page bottom.
+ * - `objects`: images, canvases, form controls. A figure that straddles the
+ *   bottom moves whole to the next page only if that leaves at most
+ *   `keepWholeFrac` of the page empty; otherwise the break goes through it.
+ * - Without a clean row (dense multi-column text, OCR-only pages), the row that
+ *   cuts the fewest lines wins, then the blankest, then the lowest.
+ */
+export async function paginate(
+  total: number,
+  lines: Interval[],
+  objects: Interval[],
+  opts: PaginateOptions,
+  energy?: RowEnergy,
+): Promise<SplitResult> {
+  const cap = Math.max(1, Math.floor(opts.capacity));
+  const window = Math.max(1, Math.floor(cap * (opts.maxGapFrac ?? 0.2)));
+  const keepWhole = Math.max(1, Math.floor(cap * (opts.keepWholeFrac ?? 0.1)));
+  // Intervals taller than a quarter page can't be avoided anyway.
+  const text = mergeIntervals(lines.filter(([a, b]) => b - a <= cap * 0.25));
+  const textPad = mergeIntervals(text, 2);
+  const all = mergeIntervals([...text, ...objects.filter(([a, b]) => b - a <= cap * 0.5)]);
+  const allPad = mergeIntervals(all, 2);
+
+  const cuts: number[] = [];
+  const methods: SplitResult['methods'] = [];
+  let pos = 0;
+  while (total - pos > cap) {
+    const hi = pos + cap;
+    const lo = Math.max(pos + 1, hi - window);
+    const loWhole = Math.max(pos + 1, hi - keepWhole);
+    let cut =
+      highestSafe(hi, loWhole, allPad) ?? highestSafe(hi, loWhole, all) ?? highestSafe(hi, lo, textPad) ?? highestSafe(hi, lo, text);
+    let method: SplitResult['methods'][number] = 'dom';
+    if (cut === null) {
+      cut = await fewestCutsRow(lo, hi, text, energy);
+      method = 'scan';
+    }
+    cuts.push(cut);
+    methods.push(method);
+    pos = cut;
+  }
+  return { cuts, methods };
+}
+
+/** Row in [lo, hi] crossing the fewest line boxes; ties go to the blankest, then the lowest row. */
+async function fewestCutsRow(lo: number, hi: number, text: Interval[], energy?: RowEnergy): Promise<number> {
+  const n = hi - lo + 1;
+  const crossings = new Int32Array(n);
+  for (const [a, b] of text) {
+    for (let y = Math.max(lo, Math.floor(a) + 1); y <= Math.min(hi, Math.ceil(b) - 1); y++) crossings[y - lo]++;
+  }
+  const e = (await energy?.(lo, hi + 1)) ?? null;
+  let eMin = Infinity;
+  let eMax = -Infinity;
+  if (e) for (const v of e) (eMin = Math.min(eMin, v)), (eMax = Math.max(eMax, v));
+  const span = eMax > eMin ? eMax - eMin : 1;
+  let best = hi;
+  let bestScore = Infinity;
+  for (let i = n - 1; i >= 0; i--) {
+    // Crossed lines dominate; blankness (0..1) next; a small pull towards the page bottom last.
+    const blank = e && i < e.length ? (e[i] - eMin) / span : 0;
+    const score = crossings[i] * 10 + blank + ((n - 1 - i) / n) * 0.3;
+    if (score < bestScore) (bestScore = score), (best = lo + i);
+  }
+  return best;
+}
+
+/** Keep user-placed cuts, but add breaks inside any part taller than `capacity` (incl. overlap). */
+export async function fitCutsToCapacity(
+  total: number,
+  userCuts: number[],
+  overlap: number,
+  pageBreaks: (y0: number, y1: number) => Promise<number[]>,
+  capacity: number,
+): Promise<number[]> {
+  const edges = [0, ...userCuts.filter((c) => c > 0 && c < total).sort((a, b) => a - b), total];
+  const out: number[] = [];
+  for (let i = 0; i + 1 < edges.length; i++) {
+    const start = i === 0 ? edges[i] : edges[i] - overlap;
+    if (edges[i + 1] - start > capacity) out.push(...(await pageBreaks(edges[i], edges[i + 1])));
+    if (i + 1 < edges.length - 1) out.push(edges[i + 1]);
+  }
+  return [...new Set(out)].sort((a, b) => a - b);
+}
+
 export interface Segment {
   y0: number;
   y1: number;

@@ -68,11 +68,16 @@ export function fitLayout(imageW: number, imageH: number, o: PageLayoutOptions):
   return { pageW, pageH, margin, k, rowsPerPage: Math.max(1, Math.floor((pageH - 2 * margin) / k)) };
 }
 
-/** Page geometry for one segment. `continuous` pages are the image's physical size at its DPI. */
+/**
+ * Page geometry for one segment. `continuous` pages are the image's physical
+ * size at its DPI. Paper pages use `doc`, the layout of the whole capture, so
+ * a short last segment doesn't switch orientation or scale.
+ */
 export function pageForSegment(
   imageW: number,
   imageH: number,
   o: PageLayoutOptions,
+  doc?: FitLayout,
 ): Pick<PdfPageInput, 'widthPt' | 'heightPt' | 'box'> {
   const margin = MARGIN_PT[o.margins];
   if (o.paper === 'continuous') {
@@ -83,7 +88,7 @@ export function pageForSegment(
     const h = imageH * k;
     return { widthPt: w + 2 * margin, heightPt: h + 2 * margin, box: { x: margin, y: margin, w, h } };
   }
-  const fl = fitLayout(imageW, imageH, o);
+  const fl = doc ?? fitLayout(imageW, imageH, o);
   const w = imageW * fl.k;
   const h = imageH * fl.k;
   // Top-aligned on the page.
