@@ -1,5 +1,7 @@
 # LocalFullPageCapture
 
+**🌐 Website: [varunshinde.github.io/LocalFullPageCapture](https://varunshinde.github.io/LocalFullPageCapture/)** · [Download](https://github.com/varunshinde/LocalFullPageCapture/releases/latest) · [Help](https://varunshinde.github.io/LocalFullPageCapture/help.html) · [Privacy policy](https://varunshinde.github.io/LocalFullPageCapture/privacy.html)
+
 **Pixel-sharp full-page screenshots, searchable PDFs and on-device OCR for Chrome. Nothing ever leaves your computer.**
 
 LocalFullPageCapture is a private, offline screenshot extension (Manifest V3). It captures entire web pages at up to 4× resolution, exports lossless PNGs and PDFs you can search and select text in, and pulls the text out of everything, including images and charts. It makes no network requests at all: no analytics, no accounts, no cloud.
