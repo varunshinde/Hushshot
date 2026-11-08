@@ -22,7 +22,7 @@ export default defineConfig({
   manifest: ({ mode }) => {
     const e2e = mode === 'e2e';
     return {
-      name: e2e ? 'LocalFullPageCapture (E2E)' : 'LocalFullPageCapture',
+      name: e2e ? 'Hushshot (E2E)' : 'Hushshot',
       description: 'Private, offline screenshots with searchable PDF export and on-device OCR. No network, no telemetry.',
       minimum_chrome_version: '120',
       permissions: PERMISSIONS,
@@ -34,7 +34,7 @@ export default defineConfig({
       },
       icons: { 16: 'icons/icon-16.png', 32: 'icons/icon-32.png', 48: 'icons/icon-48.png', 128: 'icons/icon-128.png' },
       action: {
-        default_title: 'LocalFullPageCapture',
+        default_title: 'Hushshot',
         default_icon: { 16: 'icons/icon-16.png', 32: 'icons/icon-32.png', 48: 'icons/icon-48.png' },
       },
       commands: {

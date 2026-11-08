@@ -115,7 +115,7 @@ export function App() {
     const url = URL.createObjectURL(new Blob([JSON.stringify(s, null, 2)], { type: 'application/json' }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'localfullpagecapture-settings.json';
+    a.download = 'hushshot-settings.json';
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   };
@@ -134,7 +134,7 @@ export function App() {
       <nav class="side" aria-label="Settings sections">
         <div class="brand">
           <img src="/icons/icon-32.png" width="24" height="24" alt="" />
-          <span>LocalFullPageCapture</span>
+          <span>Hushshot</span>
         </div>
         {TABS.map(([t, label]) => (
           <a key={t} href={`#${t}`} aria-current={tab === t ? 'page' : undefined} onClick={(e) => (e.preventDefault(), go(t))}>

@@ -17,7 +17,7 @@ test('production build: Chrome grants Sharp mode its debugger permission at inst
     granted: await chrome.permissions.contains({ permissions: ['debugger'] }),
     all: (await chrome.permissions.getAll()).permissions,
   }));
-  expect(r.name).toBe('LocalFullPageCapture');
+  expect(r.name).toBe('Hushshot');
   expect(r.granted).toBe(true);
   expect(r.all).toContain('debugger');
   expect(r.optional).toEqual([]);

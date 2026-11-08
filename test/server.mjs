@@ -55,7 +55,7 @@ createServer(async (req, res) => {
 
 const proxy = createServer((req, res) => {
   log.push({ method: req.method, url: req.url, at: Date.now() });
-  res.writeHead(403).end('blocked by LocalFullPageCapture privacy test');
+  res.writeHead(403).end('blocked by Hushshot privacy test');
 });
 proxy.on('connect', (req, socket) => {
   socket.on('error', () => {});

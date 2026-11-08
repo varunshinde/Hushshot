@@ -59,7 +59,7 @@ describe('pdf', () => {
     });
     const { meta, pages } = await pdfText(bytes);
     expect((meta.info as Record<string, string>).Title).toBe('Test page');
-    expect((meta.info as Record<string, string>).Producer).toBe('LocalFullPageCapture');
+    expect((meta.info as Record<string, string>).Producer).toBe('Hushshot');
     const text = pages[0].items.map((i) => i.str).join('');
     expect(text.replace(/\s+/g, ' ').trim()).toContain('Hello wörld');
     expect(text).toContain('Next');

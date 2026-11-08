@@ -112,7 +112,7 @@ export function App() {
     <main>
       <header class="row">
         <img src="/icons/icon-32.png" width="22" height="22" alt="" />
-        <strong class="grow">LocalFullPageCapture</strong>
+        <strong class="grow">Hushshot</strong>
         <span class="offline" title="Nothing leaves your computer: no account, no uploads, no network requests.">
           <IconLock size={12} /> Offline
         </span>

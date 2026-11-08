@@ -1,16 +1,18 @@
-# LocalFullPageCapture
+# Hushshot
 
-**🌐 Website: [varunshinde.github.io/LocalFullPageCapture](https://varunshinde.github.io/LocalFullPageCapture/)** · [Download](https://github.com/varunshinde/LocalFullPageCapture/releases/latest) · [Help](https://varunshinde.github.io/LocalFullPageCapture/help.html) · [Privacy policy](https://varunshinde.github.io/LocalFullPageCapture/privacy.html)
+*Formerly LocalFullPageCapture.*
+
+**🌐 Website: [varunshinde.github.io/Hushshot](https://varunshinde.github.io/Hushshot/)** · [Download](https://github.com/varunshinde/Hushshot/releases/latest) · [Help](https://varunshinde.github.io/Hushshot/help.html) · [Privacy policy](https://varunshinde.github.io/Hushshot/privacy.html)
 
 **Pixel-sharp full-page screenshots, searchable PDFs and on-device OCR for Chrome. Nothing ever leaves your computer.**
 
-LocalFullPageCapture is a private, offline screenshot extension (Manifest V3). It captures entire web pages at up to 4× resolution, exports lossless PNGs and PDFs you can search and select text in, and pulls the text out of everything, including images and charts. It makes no network requests at all: no analytics, no accounts, no cloud.
+Hushshot is a private, offline screenshot extension (Manifest V3). It captures entire web pages at up to 4× resolution, exports lossless PNGs and PDFs you can search and select text in, and pulls the text out of everything, including images and charts. It makes no network requests at all: no analytics, no accounts, no cloud.
 
 <p align="center">
-  <img src="docs/images/result.png" alt="The LocalFullPageCapture result page with Download, Copy image and Copy text buttons and a zoom slider" width="900">
+  <img src="docs/images/result.png" alt="The Hushshot result page with Download, Copy image and Copy text buttons and a zoom slider" width="900">
 </p>
 
-## Why LocalFullPageCapture
+## Why Hushshot
 
 | | |
 |---|---|
@@ -61,9 +63,9 @@ Switch to **Select text** and drag a box. This chart is a `<canvas>`, so its lab
 One big button for the full page; Visible, Area and Element next to it. Settings shows the everyday choices first, and every fine-tuning option lives under **Advanced**.
 
 <p align="center">
-  <img src="docs/images/popup.png" alt="The LocalFullPageCapture popup with a Capture full page button and Visible, Area and Element buttons" width="300">
+  <img src="docs/images/popup.png" alt="The Hushshot popup with a Capture full page button and Visible, Area and Element buttons" width="300">
   &nbsp;
-  <img src="docs/images/settings.png" alt="The LocalFullPageCapture settings page with General, Shortcuts, Advanced and Backup sections" width="520">
+  <img src="docs/images/settings.png" alt="The Hushshot settings page with General, Shortcuts, Advanced and Backup sections" width="520">
 </p>
 
 ### PDFs set up in one panel
@@ -78,15 +80,15 @@ Pick **PDF** from the Download menu to choose paper, margins, and whether to pri
 
 ## Install
 
-LocalFullPageCapture isn't on the Chrome Web Store. You load it into Chrome as an unpacked extension, either from a ready-made zip or by building it yourself.
+Hushshot isn't on the Chrome Web Store. You load it into Chrome as an unpacked extension, either from a ready-made zip or by building it yourself.
 
 ### Option 1: download a release (easiest)
 
-1. Download `LocalFullPageCapture-v….zip` from the [latest release](https://github.com/varunshinde/LocalFullPageCapture/releases/latest) and unzip it.
+1. Download `Hushshot-v….zip` from the [latest release](https://github.com/varunshinde/Hushshot/releases/latest) and unzip it.
 2. Optional: check the download. Run `shasum -a 256` on the zip and compare the result with the SHA-256 in the release notes.
 3. Open `chrome://extensions` and turn on **Developer mode** (top right).
 4. Click **Load unpacked** and choose the unzipped folder.
-5. Click the puzzle-piece icon in the toolbar and pin **LocalFullPageCapture**.
+5. Click the puzzle-piece icon in the toolbar and pin **Hushshot**.
 
 Keep the unzipped folder where it is; Chrome loads the extension from it. To update, download the new release, replace the folder's contents and click the reload arrow on the extension's card.
 
@@ -95,11 +97,11 @@ Keep the unzipped folder where it is; Chrome loads the extension from it. To upd
 **You need:** Google Chrome 120+, [Node.js](https://nodejs.org) 20+ and pnpm 10.
 
 ```bash
-git clone https://github.com/varunshinde/LocalFullPageCapture.git
+git clone https://github.com/varunshinde/Hushshot.git
 ```
 
 ```bash
-cd LocalFullPageCapture
+cd Hushshot
 ```
 
 ```bash
@@ -118,13 +120,13 @@ Then, in Chrome:
 
 1. Open `chrome://extensions` and turn on **Developer mode** (top right).
 2. Click **Load unpacked** and choose the `dist/chrome-mv3` folder.
-3. Click the puzzle-piece icon in the toolbar and pin **LocalFullPageCapture**.
+3. Click the puzzle-piece icon in the toolbar and pin **Hushshot**.
 
-Chrome loads the extension from that folder, so keep it where it is. After pulling updates, run `pnpm build` again and click the reload arrow on LocalFullPageCapture's card in `chrome://extensions`. Your settings and saved captures are kept.
+Chrome loads the extension from that folder, so keep it where it is. After pulling updates, run `pnpm build` again and click the reload arrow on Hushshot's card in `chrome://extensions`. Your settings and saved captures are kept.
 
 ## How to use it
 
-1. Open any web page and click the LocalFullPageCapture icon, or press a shortcut.
+1. Open any web page and click the Hushshot icon, or press a shortcut.
 2. Click **Capture full page**, or pick Visible, Area or Element. The toolbar icon shows the progress.
 3. The result page opens. Download, copy the image or its text, crop, or zoom in.
 
@@ -154,7 +156,7 @@ Press **Esc** to cancel at any time. To change the shortcuts, go to `chrome://ex
 
 - **No network requests, ever.** The OCR engine, WebAssembly and language model are bundled. The build fails if any remote URL is left in the code.
 - **No remote code.** No `eval` and no downloaded scripts. The Content Security Policy is `script-src 'self' 'wasm-unsafe-eval'`.
-- **Minimal permissions.** No host permissions: LocalFullPageCapture only touches a tab when you click its icon or press a shortcut. Sharp mode needs Chrome's *debugger* permission, which brings a broad-sounding install warning; it's only used on the tab you capture. Every permission is explained in [PERMISSIONS.md](PERMISSIONS.md).
+- **Minimal permissions.** No host permissions: Hushshot only touches a tab when you click its icon or press a shortcut. Sharp mode needs Chrome's *debugger* permission, which brings a broad-sounding install warning; it's only used on the tab you capture. Every permission is explained in [PERMISSIONS.md](PERMISSIONS.md).
 - **Checked by tests.** The end-to-end tests record every request from every part of the extension and fail on anything that isn't a bundled file.
 - Captures are stored only in the extension's local storage in your Chrome profile.
 
@@ -181,7 +183,7 @@ pnpm docs:screenshots
 - `pnpm test:prod` loads the real production build (`dist/chrome-mv3`) and checks what Chrome actually grants it, such as Sharp mode's `debugger` permission.
 - The E2E tests run Chrome headful with its window placed off-screen. Set `E2E_HEADLESS=1` to run headless where your setup allows it.
 - `pnpm docs:screenshots` regenerates the README images in `docs/images`.
-- `pnpm zip` builds the production extension (including the step that strips remote URLs) and zips it to `dist/LocalFullPageCapture-v<version>.zip`, ready to attach to a GitHub release.
+- `pnpm zip` builds the production extension (including the step that strips remote URLs) and zips it to `dist/Hushshot-v<version>.zip`, ready to attach to a GitHub release.
 
 <details>
 <summary><b>Project layout</b></summary>

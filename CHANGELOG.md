@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased: new name
+
+- **LocalFullPageCapture is now Hushshot.** Same extension, same privacy: still no network requests, no account and no analytics. The name now appears in Chrome, the popup, settings, page titles and the PDF "Producer"/"Creator" fields.
+- Your captures and settings are kept. New installs save to a **Hushshot** folder in Downloads. If you have changed any setting before, your current folder stays as it was; you can change it in Settings.
+- The GitHub repository and website moved to `github.com/varunshinde/Hushshot` and `varunshinde.github.io/Hushshot`. Old GitHub links redirect; the old website address does not.
+
 ## 0.2.0 (2026-11-02): Simpler everywhere
 
 ### New look

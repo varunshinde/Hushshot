@@ -35,7 +35,7 @@ function nameTable(): Uint8Array {
   const names: [number, string][] = [
     [1, 'GlyphLessFont'],
     [2, 'Regular'],
-    [3, 'LocalCapture:GlyphLessFont'],
+    [3, 'Hushshot:GlyphLessFont'],
     [4, 'GlyphLessFont'],
     [5, 'Version 1.0'],
     [6, 'GlyphLessFont'],

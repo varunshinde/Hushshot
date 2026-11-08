@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>LocalFullPageCapture: private full-page screenshots for Chrome</title>
+<title>Hushshot: private full-page screenshots for Chrome</title>
 <meta name="description" content="Capture whole web pages in sharp 2× to 4× quality. Save as PNG or a searchable PDF, crop, and copy text, even from images. Free, no account, no uploads.">
 <meta name="referrer" content="no-referrer">
 <link rel="icon" href="images/icon-32.png" sizes="32x32">
@@ -13,13 +13,13 @@
 <body>
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="./"><img src="images/icon-32.png" width="26" height="26" alt="">LocalFullPageCapture</a>
+    <a class="brand" href="./"><img src="images/icon-32.png" width="26" height="26" alt="">Hushshot</a>
     <nav class="nav-links" aria-label="Site">
       <a href="#features" class="hide-sm">Features</a>
       <a href="#privacy" class="hide-sm">Privacy</a>
       <a href="#install">Install</a>
       <a href="help.html">Help</a>
-      <a href="https://github.com/varunshinde/LocalFullPageCapture">GitHub</a>
+      <a href="https://github.com/varunshinde/Hushshot">GitHub</a>
     </nav>
   </div>
 </header>
@@ -31,7 +31,7 @@
       <h1>Full-page screenshots that never leave your computer</h1>
       <p class="lede">Capture whole web pages in sharp 2× to 4× quality. Save them as PNG or a searchable PDF, crop them, and copy their text, even from images.</p>
       <div class="ctas">
-        <a class="btn primary" href="https://github.com/varunshinde/LocalFullPageCapture/releases/latest">
+        <a class="btn primary" href="https://github.com/varunshinde/Hushshot/releases/latest">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
           Download for Chrome
         </a>
@@ -39,7 +39,7 @@
       </div>
       <div class="trust"><span>No account</span><span>No watermark</span><span>No limits</span><span>Works offline</span></div>
       <div class="frame">
-        <div class="bar"><i></i><i></i><i></i><span>LocalFullPageCapture · result</span></div>
+        <div class="bar"><i></i><i></i><i></i><span>Hushshot · result</span></div>
         <img src="images/result.png" width="1440" height="900" alt="The result page: a captured article with Download, Copy image and Copy text buttons and a zoom slider">
       </div>
     </div>
@@ -118,7 +118,7 @@
       <div class="head prose" style="margin:0">
         <span class="eyebrow">Privacy</span>
         <h2>Private by design, and tested to stay that way</h2>
-        <p class="muted">LocalFullPageCapture makes no network requests. There's no account, no analytics and no upload, and everything it needs, including the text-recognition model, is inside the extension.</p>
+        <p class="muted">Hushshot makes no network requests. There's no account, no analytics and no upload, and everything it needs, including the text-recognition model, is inside the extension.</p>
         <p class="muted">Every change runs automated tests that record each request the extension makes and fail if anything tries to leave your computer. The code is on GitHub for anyone to read.</p>
         <p><a href="privacy.html">Read the privacy policy →</a></p>
       </div>
@@ -160,23 +160,23 @@
       <div class="head prose">
         <span class="eyebrow">Install</span>
         <h2>Add it to Chrome in a minute</h2>
-        <p class="muted">LocalFullPageCapture isn't in the Chrome Web Store yet, so you add it yourself. You only do this once.</p>
+        <p class="muted">Hushshot isn't in the Chrome Web Store yet, so you add it yourself. You only do this once.</p>
       </div>
       <div class="install">
         <div class="card">
           <h3>From the download (easiest)</h3>
           <ol>
-            <li>Download the latest <a href="https://github.com/varunshinde/LocalFullPageCapture/releases/latest">LocalFullPageCapture zip</a> and unzip it.</li>
+            <li>Download the latest <a href="https://github.com/varunshinde/Hushshot/releases/latest">Hushshot zip</a> and unzip it.</li>
             <li>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b> (top right).</li>
             <li>Click <b>Load unpacked</b> and choose the unzipped folder. Chrome lists what Sharp mode's permission allows (see the FAQ).</li>
-            <li>Pin it: click the puzzle-piece icon in the toolbar, then the pin next to LocalFullPageCapture.</li>
+            <li>Pin it: click the puzzle-piece icon in the toolbar, then the pin next to Hushshot.</li>
           </ol>
         </div>
         <div class="card">
           <h3>From the source code</h3>
           <ol>
             <li>Install Node.js 20+ and pnpm 10.</li>
-            <li>Clone the <a href="https://github.com/varunshinde/LocalFullPageCapture">repository</a> and run <code>pnpm install</code> then <code>pnpm build</code>.</li>
+            <li>Clone the <a href="https://github.com/varunshinde/Hushshot">repository</a> and run <code>pnpm install</code> then <code>pnpm build</code>.</li>
             <li>Load the <code>dist/chrome-mv3</code> folder with <b>Load unpacked</b> as on the left.</li>
           </ol>
           <p class="muted" style="margin-top:6px">Each release lists a SHA-256 checksum, so you can check the download matches.</p>
@@ -192,9 +192,9 @@
         <h2>FAQ</h2>
       </div>
       <details class="faq"><summary>Why does Chrome say the extension is "debugging" the tab?</summary><p>That's how Sharp mode works. It asks Chrome to draw the page again at a higher resolution, which uses Chrome's debugging interface. The bar appears only while a capture runs and closes when it ends. If you'd rather not see it, turn Sharp mode off in Settings; captures then use your screen's resolution.</p></details>
-      <details class="faq"><summary>Why does Chrome warn that it can "read and change all your data"?</summary><p>Sharp mode uses Chrome's debugger permission, and Chrome's install dialog describes everything that permission could allow. LocalFullPageCapture only attaches it to the tab you're capturing, only during the capture you started, and makes no network requests. You can turn Sharp mode off in Settings.</p></details>
+      <details class="faq"><summary>Why does Chrome warn that it can "read and change all your data"?</summary><p>Sharp mode uses Chrome's debugger permission, and Chrome's install dialog describes everything that permission could allow. Hushshot only attaches it to the tab you're capturing, only during the capture you started, and makes no network requests. You can turn Sharp mode off in Settings.</p></details>
       <details class="faq"><summary>Is anything uploaded?</summary><p>No. Captures, text recognition and file exports all happen on your computer. The extension doesn't make network requests at all, and its automated tests check that on every change.</p></details>
-      <details class="faq"><summary>Where are my files saved?</summary><p>In your Downloads folder, inside a LocalFullPageCapture folder. You can change the folder and the file name pattern in Settings.</p></details>
+      <details class="faq"><summary>Where are my files saved?</summary><p>In your Downloads folder, inside a Hushshot folder. You can change the folder and the file name pattern in Settings.</p></details>
       <details class="faq"><summary>A page didn't capture correctly. What can I try?</summary><p>For app pages that scroll inside a panel, use <b>Pick scroll area…</b> in the popup. If parts repeat or look odd, try Settings → Advanced → Method → Compatibility mode. Chrome doesn't allow extensions to capture its own pages (like <code>chrome://</code> pages or the Web Store).</p></details>
       <details class="faq"><summary>Does it work in other browsers?</summary><p>It's built and tested for Google Chrome. Other Chromium browsers such as Edge and Brave may work but aren't tested.</p></details>
       <details class="faq"><summary>Is it really free?</summary><p>Yes. There's no paid tier, no trial and no limits.</p></details>
@@ -204,12 +204,12 @@
 
 <footer class="site">
   <div class="wrap">
-    <a class="brand" href="./"><img src="images/icon-32.png" width="22" height="22" alt="">LocalFullPageCapture</a>
+    <a class="brand" href="./"><img src="images/icon-32.png" width="22" height="22" alt="">Hushshot</a>
     <span class="grow"></span>
     <a href="help.html">Help</a>
     <a href="privacy.html">Privacy policy</a>
     <a href="changelog.html">Changelog</a>
-    <a href="https://github.com/varunshinde/LocalFullPageCapture">GitHub</a>
+    <a href="https://github.com/varunshinde/Hushshot">GitHub</a>
   </div>
 </footer>
 </body>
