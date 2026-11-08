@@ -1,6 +1,6 @@
 {
   "name": "hushshot",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Private, offline screenshot and screen-capture Chrome extension",
   "type": "module",
