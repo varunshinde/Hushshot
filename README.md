@@ -246,6 +246,6 @@ Only bundled languages are offered; nothing is downloaded at runtime. To add one
 - **Width** is limited to 16,384 pixels; wider captures are narrowed with a warning.
 - **Copy image** works up to 16,384 px tall. For longer captures, crop first or download instead.
 
-## Roadmap
+## What's next
 
-Phase 1 (screenshots, PNG/PDF export, OCR) and a full redesign of the popup, result page and settings are done. Next up: an annotation editor, screen recording, a video editor with offline captions, and a capture library. See [CHANGELOG.md](CHANGELOG.md).
+Hushshot is actively developed. Everything described here stays free; an optional Pro upgrade with extra tools is planned. New versions are listed in [CHANGELOG.md](CHANGELOG.md) and on the [Releases page](https://github.com/varunshinde/Hushshot/releases).
