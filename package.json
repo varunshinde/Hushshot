@@ -9,7 +9,7 @@
     "dev": "wxt",
     "build": "wxt build && node scripts/strip-remote-urls.mjs dist/chrome-mv3",
     "build:e2e": "wxt build --mode e2e && node scripts/strip-remote-urls.mjs dist/chrome-mv3-e2e",
-    "zip": "pnpm build && cd dist/chrome-mv3 && rm -f ../Hushshot-v$npm_package_version.zip && zip -qrX ../Hushshot-v$npm_package_version.zip .",
+    "zip": "pnpm build && cd dist/chrome-mv3 && rm -f ../Hushshot-v$npm_package_version.zip && zip -qrX ../Hushshot-v$npm_package_version.zip . && cp ../Hushshot-v$npm_package_version.zip ../Hushshot.zip",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "pnpm build:e2e && playwright test && pnpm test:prod",

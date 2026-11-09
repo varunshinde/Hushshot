@@ -2,7 +2,7 @@
 
 *Formerly LocalFullPageCapture.*
 
-**🌐 Website: [hushshot.app](https://hushshot.app/)** · [Download](https://github.com/varunshinde/Hushshot/releases/latest) · [Help](https://hushshot.app/help.html) · [Privacy policy](https://hushshot.app/privacy.html)
+**🌐 Website: [hushshot.app](https://hushshot.app/)** · [Download](https://github.com/varunshinde/Hushshot/releases/latest/download/Hushshot.zip) · [Help](https://hushshot.app/help.html) · [Privacy policy](https://hushshot.app/privacy.html)
 
 **Pixel-sharp full-page screenshots, searchable PDFs and on-device OCR for Chrome. Nothing ever leaves your computer.**
 
@@ -80,11 +80,11 @@ Pick **PDF** from the Download menu to choose paper, margins, and whether to pri
 
 ## Install
 
-Hushshot isn't on the Chrome Web Store. You load it into Chrome as an unpacked extension, either from a ready-made zip or by building it yourself.
+Hushshot is coming to the Chrome Web Store soon. Until then, you load it into Chrome as an unpacked extension, either from a ready-made zip or by building it yourself.
 
 ### Option 1: download a release (easiest)
 
-1. Download `Hushshot-v….zip` from the [latest release](https://github.com/varunshinde/Hushshot/releases/latest) and unzip it.
+1. Download [`Hushshot.zip`](https://github.com/varunshinde/Hushshot/releases/latest/download/Hushshot.zip) (always the latest version; every version is on the [Releases page](https://github.com/varunshinde/Hushshot/releases)) and unzip it.
 2. Optional: check the download. Run `shasum -a 256` on the zip and compare the result with the SHA-256 in the release notes.
 3. Open `chrome://extensions` and turn on **Developer mode** (top right).
 4. Click **Load unpacked** and choose the unzipped folder.

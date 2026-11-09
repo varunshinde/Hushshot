@@ -64,6 +64,8 @@ kbd { background: var(--surface); border: 1px solid var(--line); border-bottom-w
 .hero .wrap { display: grid; gap: 22px; justify-items: center; text-align: center; }
 .hero .lede { font-size: 1.25rem; color: var(--muted); max-width: 46ch; }
 .ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.soon { margin: 0; color: var(--muted); font-size: .95rem; }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 650; font-size: .85rem; margin-right: 4px; }
 .trust { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: center; color: var(--muted); font-size: .95rem; }
 .trust span::before { content: '✓'; color: var(--good); font-weight: 800; margin-right: 6px; }
 .frame { margin-top: 26px; width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); background: var(--surface); }
