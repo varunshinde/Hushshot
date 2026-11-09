@@ -2,7 +2,7 @@
 
 *Formerly LocalFullPageCapture.*
 
-**🌐 Website: [varunshinde.github.io/Hushshot](https://varunshinde.github.io/Hushshot/)** · [Download](https://github.com/varunshinde/Hushshot/releases/latest) · [Help](https://varunshinde.github.io/Hushshot/help.html) · [Privacy policy](https://varunshinde.github.io/Hushshot/privacy.html)
+**🌐 Website: [hushshot.app](https://hushshot.app/)** · [Download](https://github.com/varunshinde/Hushshot/releases/latest) · [Help](https://hushshot.app/help.html) · [Privacy policy](https://hushshot.app/privacy.html)
 
 **Pixel-sharp full-page screenshots, searchable PDFs and on-device OCR for Chrome. Nothing ever leaves your computer.**
 

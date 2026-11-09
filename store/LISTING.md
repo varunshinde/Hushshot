@@ -44,7 +44,7 @@ PRIVATE BY DESIGN
 
 About the install warning: Sharp mode uses Chrome's debugger permission to draw the page at higher resolution. Chrome's install dialog describes everything that permission could allow in general. Hushshot attaches it only to the tab you're capturing, only while a capture you started is running, and nothing ever leaves your computer. You can turn Sharp mode off in Settings.
 
-Website and help: https://varunshinde.github.io/Hushshot/
+Website and help: https://hushshot.app/
 Source code and what each permission is for: https://github.com/varunshinde/Hushshot
 ```
 
@@ -54,8 +54,8 @@ Source code and what each permission is for: https://github.com/varunshinde/Hush
 - **Screenshots (1280×800), in this order:** `1-full-page.png`, `2-popup.png`, `3-pdf.png`, `4-copy-text.png`, `5-private.png`
 - **Small promo tile (440×280):** `promo-small-440x280.png`
 - **Marquee promo tile (1400×560, optional):** `promo-marquee-1400x560.png`
-- **Official URL:** leave as "None" (it needs a domain verified in Google Search Console)
-- **Homepage URL:** https://varunshinde.github.io/Hushshot/
+- **Official URL:** https://hushshot.app (verify the domain in Google Search Console first; until then leave it as "None")
+- **Homepage URL:** https://hushshot.app/
 - **Support URL:** https://github.com/varunshinde/Hushshot/issues
 - **Mature content:** No
 
@@ -91,7 +91,7 @@ Tick all three certifications:
 - I do not use or transfer user data for purposes that are unrelated to my item's single purpose
 - I do not use or transfer user data to determine creditworthiness or for lending purposes
 
-**Privacy policy URL:** https://varunshinde.github.io/Hushshot/privacy.html
+**Privacy policy URL:** https://hushshot.app/privacy.html
 
 ## Distribution tab
 
