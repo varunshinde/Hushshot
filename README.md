@@ -246,6 +246,10 @@ Only bundled languages are offered; nothing is downloaded at runtime. To add one
 - **Width** is limited to 16,384 pixels; wider captures are narrowed with a warning.
 - **Copy image** works up to 16,384 px tall. For longer captures, crop first or download instead.
 
+## Licence
+
+Hushshot is open source under the [MIT licence](LICENSE).
+
 ## What's next
 
 Hushshot is actively developed. Everything described here stays free; an optional Pro upgrade with extra tools is planned. New versions are listed in [CHANGELOG.md](CHANGELOG.md) and on the [Releases page](https://github.com/varunshinde/Hushshot/releases).

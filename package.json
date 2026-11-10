@@ -2,6 +2,7 @@
   "name": "hushshot",
   "version": "0.2.1",
   "private": true,
+  "license": "MIT",
   "description": "Private, offline screenshot and screen-capture Chrome extension",
   "type": "module",
   "packageManager": "pnpm@10.34.9",
