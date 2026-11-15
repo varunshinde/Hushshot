@@ -7,7 +7,7 @@ What to enter in the [Chrome Web Store developer dashboard](https://chrome.googl
 Upload the same zip that's attached to the GitHub release, so both are byte-for-byte identical. The store takes the name, the short description (summary) and the icon from the manifest:
 
 - **Name:** Hushshot
-- **Summary:** Private, offline screenshots with searchable PDF export and on-device OCR. No network, no telemetry.
+- **Summary:** Private, offline full-page screenshots with annotation, redaction, searchable PDFs and on-device OCR. Nothing is uploaded.
 
 ## Store listing tab
 
@@ -32,6 +32,11 @@ SAVE AND SHARE
 • Optional page address, capture date and page numbers at the bottom of each PDF page
 • Copy image or copy text straight to the clipboard
 
+MARK UP AND HIDE PRIVATE DETAILS
+• Arrows, boxes, text, numbered steps, callouts, stamps, a pen and a highlighter, with undo for every change
+• Blur, pixelate or black out anything private: the hidden pixels and text are really removed from every download
+• Find private info: spots email addresses, phone and card numbers and API keys for you, on your computer
+
 CROP, ZOOM AND TEXT
 • Crop with handles, and every download uses just that area
 • Zoom with trackpad pinch, a slider or the keyboard
@@ -51,7 +56,7 @@ Source code and what each permission is for: https://github.com/varunshinde/Hush
 - **Category:** Productivity › Tools
 - **Language:** English
 - **Store icon (128×128):** `public/icons/icon-128.png`
-- **Screenshots (1280×800), in this order:** `1-full-page.png`, `2-popup.png`, `3-pdf.png`, `4-copy-text.png`, `5-private.png`
+- **Screenshots (1280×800), in this order:** `1-full-page.png`, `2-popup.png`, `3-annotate.png`, `4-copy-text.png`, `5-private.png`
 - **Small promo tile (440×280):** `promo-small-440x280.png`
 - **Marquee promo tile (1400×560, optional):** `promo-marquee-1400x560.png`
 - **Official URL:** https://hushshot.app (verify the domain in Google Search Console first; until then leave it as "None")

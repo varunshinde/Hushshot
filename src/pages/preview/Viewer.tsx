@@ -1,8 +1,9 @@
+import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { autoScrollSpeed, dragCrop, HANDLES, isWholeImage, rectFromPoints, type Handle } from '../../lib/geometry/view';
 import type { CaptureRecord, Rect, Word } from '../../lib/types';
 
-export type Tool = 'pan' | 'select' | 'crop';
+export type Tool = 'pan' | 'select' | 'crop' | 'annotate';
 
 interface Props {
   rec: CaptureRecord;
@@ -23,6 +24,8 @@ interface Props {
   onCutsChange: (cuts: number[]) => void;
   onSelectRect: (r: Rect | null, final: boolean) => void;
   viewportRef: { current: HTMLDivElement | null };
+  /** Overlays drawn over the image (annotations). */
+  children?: ComponentChildren;
 }
 
 const MIN_SEGMENT = 50;
@@ -107,7 +110,7 @@ export function Viewer(p: Props) {
   }, []);
 
   const onDown = (e: PointerEvent) => {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || p.tool === 'annotate') return;
     const target = e.target as HTMLElement;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     last.current = { x: e.clientX, y: e.clientY };
@@ -229,6 +232,8 @@ export function Viewer(p: Props) {
             </span>
           </div>
         ))}
+
+      {p.children}
 
       {p.selection.map((w, i) => (
         <div key={`w${i}`} class="hit" style={{ left: `${L(w.x)}px`, top: `${T(w.y)}px`, width: `${w.w * z}px`, height: `${w.h * z}px` }} />

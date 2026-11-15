@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.3.0 (2026-11-15): Annotate and redact
+
+### Annotation editor
+- **Annotate** on the result page: arrow, line, rectangle, ellipse, pen, highlighter, text, numbered steps, callouts and stamps. Choose the colour, width, size and opacity; select, move, resize and delete.
+- **Undo and redo** for every change (⌘Z, ⌘⇧Z), one step per drag or typed text.
+- Annotations are saved with the capture and stay editable. They're drawn into every download and copy at the capture's full 2×–4× resolution.
+
+### Hide private details
+- **Redaction** with blur, pixelate or a black box. It's destructive at export: the hidden pixels are replaced in every download and copy, and words under a redaction are left out of PDF text, copied text and text files.
+- **Find private info**: finds email addresses, phone numbers, card numbers (Luhn-checked) and API keys or tokens in the capture's text, on your computer, and redacts the ones you choose.
+- **Spotlight**: dims everything outside the boxes you draw.
+
+### Also
+- Hushshot is now on the [Chrome Web Store](https://chromewebstore.google.com/detail/hushshot/hhefohbdbmjblbchbpnpldebgklbgfle).
+- "Print-style PDF" is turned off for captures with annotations or redactions, because it prints the live page and would show what you hid.
+
 ## 0.2.1 (2026-11-08): New name, Hushshot
 
 - **LocalFullPageCapture is now Hushshot.** Same extension, same privacy: still no network requests, no account and no analytics. The name now appears in Chrome, the popup, settings, page titles and the PDF "Producer"/"Creator" fields.

@@ -1,9 +1,9 @@
 import type { JSX } from 'preact';
 
 /** Small inline icons (24 px grid, stroked with currentColor). Bundled, nothing fetched. */
-type IconProps = { size?: number; title?: string };
+export type IconProps = { size?: number; title?: string };
 
-function Svg({ size = 16, title, children }: IconProps & { children: JSX.Element | JSX.Element[] }) {
+export function Svg({ size = 16, title, children }: IconProps & { children: JSX.Element | JSX.Element[] }) {
   return (
     <svg
       width={size}

@@ -63,7 +63,7 @@ test('write Chrome Web Store images', async ({ ext }) => {
     1280,
     800,
   );
-  await render('3-pdf.png', slide('Searchable PDFs, lossless images', 'Pick paper size, margins and page breaks. Every word can be searched and selected.', wide('export-pdf.png')), 1280, 800);
+  await render('3-annotate.png', slide('Mark it up, hide what\'s private', 'Arrows, boxes and text. Blur or pixelate private details, really removed from every download.', wide('annotate.png')), 1280, 800);
   await render('4-copy-text.png', slide('Copy text, even from images', 'On-device text recognition reads charts, screenshots and pictures. Nothing is uploaded.', wide('select-text.png')), 1280, 800);
   await render(
     '5-private.png',

@@ -32,6 +32,15 @@ import type { CaptureRecord, Rect, Word } from '../../lib/types';
 import { fmtBytes, fmtDate, fmtPx } from '../shared/format';
 import { IconChevron, IconClose, IconCopy, IconCrop, IconDownload, IconHand, IconMinus, IconMore, IconPlus, IconSelectText, IconText } from '../shared/icons';
 import { Viewer, type Tool } from './Viewer';
+import { exportWords } from '../../annotate/apply';
+import { redactions } from '../../annotate/model';
+import { AnnotateBar } from '../../annotate/ui/AnnotateBar';
+import { AnnotateLayer } from '../../annotate/ui/AnnotateLayer';
+import { IconPen } from '../../annotate/ui/icons';
+import { PrivatePanel } from '../../annotate/ui/PrivatePanel';
+import { useAnnotations } from '../../annotate/ui/state';
+import { composedFits, composes, renderComposed } from '../../edition';
+import { useEdition } from './edition';
 
 type ZoomMode = 'fit-width' | 'fit-page' | 'custom';
 
@@ -107,7 +116,6 @@ function Popover({ open, onClose, children, align = 'right' }: { open: boolean; 
 }
 
 function Preview({ id }: { id: string }) {
-  const [rec, setRec] = useState<CaptureRecord | null | undefined>(undefined);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [urls, setUrls] = useState<string[]>([]);
   const [zoomMode, setZoomMode] = useState<ZoomMode>('fit-width');
@@ -121,17 +129,23 @@ function Preview({ id }: { id: string }) {
   const [ocr, setOcr] = useState<{ progress: number; status: string } | null>(null);
   const [selRect, setSelRect] = useState<Rect | null>(null);
   const [menu, setMenu] = useState<'download' | 'more' | null>(null);
-  const [panel, setPanel] = useState(false);
+  const [panel, setPanel] = useState<string | null>(null);
+  const [annotating, setAnnotating] = useState(false);
+  const edition = useEdition();
+  const [rawRec, setRawRec] = useState<CaptureRecord | null | undefined>(undefined);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const tilesRef = useRef<TileSource | null>(null);
   const anchor = useRef<{ ix: number; iy: number; fx: number; fy: number } | null>(null);
   /** Zoom requested but not rendered yet, so quick successive pinch events compound correctly. */
   const pendingZ = useRef<number | null>(null);
   const dpr = window.devicePixelRatio || 1;
+  const ed = useAnnotations(rawRec);
+  // The editor holds the live annotations; everything that exports reads them from `rec`.
+  const rec = useMemo(() => (rawRec && ed.doc ? { ...rawRec, edits: ed.doc } : rawRec), [rawRec, ed.doc]);
 
   const reload = useCallback(async () => {
     const r = await getCapture(id);
-    setRec(r ?? null);
+    setRawRec(r ?? null);
     return r;
   }, [id]);
 
@@ -255,7 +269,7 @@ function Preview({ id }: { id: string }) {
   const limitsRef = useRef(limits);
   limitsRef.current = limits;
 
-  const selection: Word[] = useMemo(() => (rec && selRect ? wordsInRect(rec.words, selRect) : []), [rec?.words, selRect]);
+  const selection: Word[] = useMemo(() => (rec && selRect ? wordsInRect(exportWords(rec), selRect) : []), [rec?.words, rec?.edits, selRect]);
 
   const flash = (text: string, kind?: 'err') => {
     setToast({ text, kind });
@@ -319,6 +333,11 @@ function Preview({ id }: { id: string }) {
     const onKey = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement).closest('input, textarea, select')) return;
       const mod = e.metaKey || e.ctrlKey;
+      if (annotating && rec) {
+        if (ed.onKey(e, rec.scale)) return;
+        if (e.key === 'Escape' && !mod) return void (setAnnotating(false), setPanel(null));
+        if (!mod && ['c', 'h', 't', 'v'].includes(e.key.toLowerCase())) return;
+      }
       if (editing) {
         if (e.key === 'Escape') return cancelCrop();
         if (e.key === 'Enter') return void finishCrop();
@@ -375,8 +394,19 @@ function Preview({ id }: { id: string }) {
     if (rec.splits && BREAK_KEYS.some((k) => k in patch)) await updateCapture(id, (r) => void (r.splits = null)).then(reload);
   };
   const segs = plan?.segments ?? [];
-  const words = wordsForArea(rec.words, area);
-  const canCopyImage = area.height <= COPY_MAX_SIDE && area.width <= COPY_MAX_SIDE && area.width * area.height <= COPY_MAX_PIXELS;
+  const words = wordsForArea(exportWords(rec), area);
+  const composed = composes(rec);
+  const canCopyImage = composed
+    ? !!composedFits(rec, area)
+    : area.height <= COPY_MAX_SIDE && area.width <= COPY_MAX_SIDE && area.width * area.height <= COPY_MAX_PIXELS;
+  const hasRedactions = redactions(rec.edits).length > 0;
+  const startAnnotating = () => {
+    setAnnotating(true);
+    setTool('pan');
+    setSelRect(null);
+    if (panel === 'options') setPanel(null);
+  };
+  const ectx = { rec, area, tiles: tilesRef.current, editor: ed, settings, panel, setPanel, closeMenu: () => setMenu(null), guard, flash };
 
   const doExport = (f: ExportFormat = format) =>
     guard(`Saving ${FORMAT_NAME[f]}`, async (progress) => {
@@ -401,7 +431,7 @@ function Preview({ id }: { id: string }) {
   const copyImage = () =>
     canCopyImage
       ? guard('Copy image', async () => {
-          const canvas = await renderArea(tilesRef.current!, rec.placements, area);
+          const canvas = await renderComposed(tilesRef.current!, rec, area);
           const blob = await canvas.convertToBlob({ type: 'image/png' });
           await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
           flash('Image copied');
@@ -452,7 +482,7 @@ function Preview({ id }: { id: string }) {
     if (rec.ocr.status === 'error') return 'Reading text in images failed';
     return '';
   })();
-  const partsLabel = format === 'pdf' ? `${segs.length} PDF page${segs.length === 1 ? '' : 's'}` : segs.length > 1 ? `${segs.length} parts` : '1 image';
+  const partsLabel = format === 'pdf' ? `${segs.length} PDF page${segs.length === 1 ? '' : 's'}` : segs.length > 1 && !composed ? `${segs.length} parts` : '1 image';
   const percent = Math.round(percentOf(z, dpr));
 
   return (
@@ -488,7 +518,7 @@ function Preview({ id }: { id: string }) {
                 </button>
               ))}
               <hr />
-              <button role="menuitem" onClick={() => (setMenu(null), setPanel(true))}>
+              <button role="menuitem" onClick={() => (setMenu(null), setPanel('options'))}>
                 <b>Download options…</b>
                 <span>Paper size, page breaks, file name</span>
               </button>
@@ -517,11 +547,17 @@ function Preview({ id }: { id: string }) {
                 <span>On-device; adds text from pictures and charts</span>
               </button>
               {rec.engine === 'cdp' && (
-                <button role="menuitem" onClick={vectorPdf} title="Prints the live page with real vector text. The layout follows the site's print styles.">
+                <button
+                  role="menuitem"
+                  disabled={hasRedactions || !!rec.edits?.items.length}
+                  onClick={vectorPdf}
+                  title="Prints the live page with real vector text. The layout follows the site's print styles."
+                >
                   <b>Print-style PDF</b>
-                  <span>Real text, from the open tab</span>
+                  <span>{hasRedactions ? 'Not available: it would show redacted text' : rec.edits?.items.length ? 'Not available with annotations' : 'Real text, from the open tab'}</span>
                 </button>
               )}
+              {edition.menu(ectx)}
               <a role="menuitem" href={rec.url} target="_blank" rel="noreferrer" onClick={() => setMenu(null)}>
                 <b>Open original page</b>
               </a>
@@ -544,8 +580,14 @@ function Preview({ id }: { id: string }) {
         </ul>
       )}
 
-      <div class="toolbar" role="toolbar" aria-label="View tools">
-        {editing ? (
+      <div class={`toolbar${annotating && !editing ? ' annotating' : ''}`} role="toolbar" aria-label="View tools">
+        {annotating && !editing ? (
+          <AnnotateBar
+            editor={ed}
+            scale={rec.scale}
+            onFindPrivate={() => setPanel(panel === 'private' ? null : 'private')}
+          />
+        ) : editing ? (
           <div class="crop-bar">
             <IconCrop />
             <span>
@@ -571,6 +613,10 @@ function Preview({ id }: { id: string }) {
                 <IconCrop /> Crop
               </button>
             </div>
+            <button onClick={startAnnotating} title="Draw arrows, shapes and text, or hide private details">
+              <IconPen /> Annotate
+            </button>
+            {edition.toolbar(ectx)}
             {rec.crop && (
               <span class="chip">
                 Cropped
@@ -586,7 +632,13 @@ function Preview({ id }: { id: string }) {
             {selection.length > 0 && <button onClick={copySelection}>Copy {selection.length} selected words</button>}
           </>
         )}
-        <span class="grow" />
+        {annotating && !editing ? (
+          <button class="primary" onClick={() => (setAnnotating(false), setPanel(null), ed.setSelected(null))}>
+            Done
+          </button>
+        ) : (
+          <span class="grow" />
+        )}
         <div class="zoom" role="group" aria-label="Zoom">
           <button aria-pressed={zoomMode === 'fit-page'} onClick={() => setZoomMode('fit-page')} title="Show the whole capture (F)">
             Fit page
@@ -622,10 +674,10 @@ function Preview({ id }: { id: string }) {
             urls={urls}
             zoom={z}
             view={view}
-            tool={tool}
+            tool={annotating && !editing ? 'annotate' : tool}
             cropBox={editing ? cropBox : null}
             onCropBox={setCropBox}
-            cuts={plan?.cuts ?? []}
+            cuts={annotating ? [] : plan?.cuts ?? []}
             overlap={settings.segmentOverlap}
             selection={selection}
             selectRect={selRect}
@@ -634,18 +686,26 @@ function Preview({ id }: { id: string }) {
             onSelectRect={(r, final) => {
               setSelRect(r);
               if (final && r) {
-                const ws = wordsInRect(rec.words, r);
+                const ws = wordsInRect(exportWords(rec), r);
                 if (ws.length) navigator.clipboard.writeText(toPlainText(ws)).then(() => flash(`Copied ${ws.length} word${ws.length === 1 ? '' : 's'}`));
               }
             }}
-          />
+          >
+            {ed.doc && (
+              <AnnotateLayer rec={rec} doc={ed.doc} view={view} zoom={z} active={annotating && !editing} editor={ed} tiles={tilesRef.current} viewportRef={viewportRef} />
+            )}
+          </Viewer>
         </section>
 
-        {panel && (
+        {panel === 'private' && ed.doc && (
+          <PrivatePanel rec={rec} editor={ed} onClose={() => setPanel(null)} onDone={(n) => (setPanel(null), flash(`Redacted ${n} item${n === 1 ? '' : 's'}`))} />
+        )}
+        {edition.panel(ectx)}
+        {panel === 'options' && (
           <aside class="panel" aria-label="Download options">
             <div class="row">
               <h2 class="grow">Download options</h2>
-              <button class="icon-only" onClick={() => setPanel(false)} aria-label="Close options">
+              <button class="icon-only" onClick={() => setPanel(null)} aria-label="Close options">
                 <IconClose />
               </button>
             </div>
@@ -755,6 +815,7 @@ function Preview({ id }: { id: string }) {
         )}
       </div>
 
+      {edition.overlay(ectx)}
       {busy && (
         <div class="busy" role="status">
           {busy.label}… {Math.round(busy.progress * 100)}%

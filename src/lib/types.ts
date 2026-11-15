@@ -1,3 +1,5 @@
+import type { EditDoc } from '../annotate/model';
+
 export type CaptureMode = 'visible' | 'full' | 'region' | 'element';
 export type EngineKind = 'cdp' | 'scroll';
 
@@ -99,6 +101,8 @@ export interface CaptureRecord {
   sourceTabId?: number;
   /** Total bytes of the stored tile PNGs, used for size estimates. */
   tileBytes: number;
+  /** Annotations and redactions (plus Pro background settings); editable until exported, never baked into the tiles. */
+  edits?: EditDoc;
 }
 
 export interface CaptureSummary {

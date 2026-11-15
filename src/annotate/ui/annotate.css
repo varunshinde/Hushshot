@@ -1,0 +1,33 @@
+/* Annotation editor. Reuses the preview page's tokens and controls. */
+.ann-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.ann-layer.active { pointer-events: auto; cursor: crosshair; }
+.ann-layer.active.tool-select { cursor: default; }
+.ann-layer.active.tool-text { cursor: text; }
+.ann-canvas { position: absolute; pointer-events: none; }
+.ann-sel { position: absolute; outline: 1.5px dashed var(--accent); outline-offset: 2px; pointer-events: none; }
+.ann-sel .handle { pointer-events: auto; width: 12px; height: 12px; }
+.ann-sel .h-nw, .ann-sel .h-ne, .ann-sel .h-se, .ann-sel .h-sw { margin: 1px; }
+.ann-dot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; background: #fff; border: 2px solid var(--accent); border-radius: 50%; cursor: move; z-index: 4; }
+.ann-dot::before { content: ''; position: absolute; inset: -8px; }
+.ann-dot.tail { border-color: #ff8a00; }
+.ann-text { position: absolute; z-index: 5; border: 1.5px dashed var(--accent); border-radius: 4px; padding: 0; margin: -2px 0 0 -2px; resize: none; overflow: hidden; outline: none; background: transparent; white-space: pre; }
+
+/* Two rows of annotation tools: keep Done and the zoom controls on the first row. */
+.toolbar.annotating { align-items: flex-start; }
+.ann-bar { display: grid; gap: 6px; flex: 1; min-width: 0; }
+.ann-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ann-tools button { padding: 5px 7px; }
+.ann-style { font-size: 12px; color: var(--fg-2); min-height: 30px; }
+.ann-style input[type='range'] { width: 90px; accent-color: var(--accent); }
+.swatches { display: inline-flex; align-items: center; gap: 4px; }
+.swatch { width: 20px; height: 20px; padding: 0; border-radius: 50%; border: 1px solid rgba(0, 0, 0, .2); }
+.swatch.on { outline: 2px solid var(--accent); outline-offset: 2px; }
+.swatches input[type='color'] { width: 26px; height: 22px; padding: 0; border: 1px solid var(--border); border-radius: 4px; background: none; }
+.stamps { display: inline-flex; gap: 2px; flex-wrap: wrap; }
+.stamps button { padding: 2px 5px; font-size: 16px; line-height: 1.2; }
+.stamps button.on { background: var(--accent-soft); border-color: var(--accent); }
+
+.findings { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 50vh; overflow: auto; }
+.findings label { align-items: flex-start; }
+.findings span { display: grid; gap: 2px; font-size: 12px; }
+.findings code { font-size: 11px; color: var(--fg-2); word-break: break-all; }

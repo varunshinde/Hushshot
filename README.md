@@ -2,9 +2,9 @@
 
 *Formerly LocalFullPageCapture.*
 
-**🌐 Website: [hushshot.app](https://hushshot.app/)** · [Download](https://github.com/varunshinde/Hushshot/releases/latest/download/Hushshot.zip) · [Help](https://hushshot.app/help.html) · [Privacy policy](https://hushshot.app/privacy.html)
+**🌐 Website: [hushshot.app](https://hushshot.app/)** · [Add to Chrome](https://chromewebstore.google.com/detail/hushshot/hhefohbdbmjblbchbpnpldebgklbgfle) · [Download zip](https://github.com/varunshinde/Hushshot/releases/latest/download/Hushshot.zip) · [Help](https://hushshot.app/help.html) · [Privacy policy](https://hushshot.app/privacy.html)
 
-**Pixel-sharp full-page screenshots, searchable PDFs and on-device OCR for Chrome. Nothing ever leaves your computer.**
+**Pixel-sharp full-page screenshots, annotation and redaction, searchable PDFs and on-device OCR for Chrome. Nothing ever leaves your computer.**
 
 Hushshot is a private, offline screenshot extension (Manifest V3). It captures entire web pages at up to 4× resolution, exports lossless PNGs and PDFs you can search and select text in, and pulls the text out of everything, including images and charts. It makes no network requests at all: no analytics, no accounts, no cloud.
 
@@ -19,6 +19,7 @@ Hushshot is a private, offline screenshot extension (Manifest V3). It captures e
 | 🔍 **Pixel-sharp** | Re-renders the page at 2×, 3× or 4× instead of upscaling, so text stays crisp when you zoom in. No seams, no duplicated rows. |
 | 🧹 **Clean output** | Hides scrollbars, shows sticky headers once, waits for lazy images and can remove cookie banners and chat bubbles. |
 | 📄 **Searchable PDFs** | Every PDF has an invisible text layer, so you can search, select and copy text in any PDF viewer. |
+| ✏️ **Mark up and redact** | Arrows, boxes, text, numbered steps, callouts and stamps. Blur, pixelate or black out private details, and the hidden pixels and text are really removed from every download. |
 | 🔤 **Text from anything** | Exact text from the page, plus offline OCR for images, canvas charts and video frames. |
 | 🔒 **Private by design** | Zero network requests, no remote code, minimal permissions. Everything is bundled, including the OCR model. |
 
@@ -58,6 +59,14 @@ Switch to **Select text** and drag a box. This chart is a `<canvas>`, so its lab
   <img src="docs/images/select-text.png" alt="Dragging a selection box over a chart copies the text OCR found in it" width="900">
 </p>
 
+### Mark it up and hide what's private
+
+Arrows, boxes, text, numbered steps, callouts, stamps, a pen and a highlighter, with undo for every change. Redact with blur, pixelate or a black box: the pixels underneath are replaced and the words under it are left out of PDFs and copied text. **Find private info** finds email addresses, phone and card numbers and API keys in the capture's text, on your computer.
+
+<p align="center">
+  <img src="docs/images/annotate.png" alt="The annotation editor with a box around the headline, an arrow and a pixelated byline" width="900">
+</p>
+
 ### Simple popup, simple settings
 
 One big button for the full page; Visible, Area and Element next to it. Settings shows the everyday choices first, and every fine-tuning option lives under **Advanced**.
@@ -80,9 +89,9 @@ Pick **PDF** from the Download menu to choose paper, margins, and whether to pri
 
 ## Install
 
-Hushshot is coming to the Chrome Web Store soon. Until then, you load it into Chrome as an unpacked extension, either from a ready-made zip or by building it yourself.
+The easiest way is the [Chrome Web Store](https://chromewebstore.google.com/detail/hushshot/hhefohbdbmjblbchbpnpldebgklbgfle): click **Add to Chrome**, and updates arrive automatically. You can also load it yourself as an unpacked extension, from a ready-made zip or by building it.
 
-### Option 1: download a release (easiest)
+### Option 1: download a release
 
 1. Download [`Hushshot.zip`](https://github.com/varunshinde/Hushshot/releases/latest/download/Hushshot.zip) (always the latest version; every version is on the [Releases page](https://github.com/varunshinde/Hushshot/releases)) and unzip it.
 2. Optional: check the download. Run `shasum -a 256` on the zip and compare the result with the SHA-256 in the release notes.
@@ -128,7 +137,7 @@ Chrome loads the extension from that folder, so keep it where it is. After pulli
 
 1. Open any web page and click the Hushshot icon, or press a shortcut.
 2. Click **Capture full page**, or pick Visible, Area or Element. The toolbar icon shows the progress.
-3. The result page opens. Download, copy the image or its text, crop, or zoom in.
+3. The result page opens. Download, copy the image or its text, crop, zoom in, or click **Annotate** to mark it up and hide private details.
 
 | Mode | Shortcut (Mac: Option+Shift) | What it captures |
 |---|---|---|

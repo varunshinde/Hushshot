@@ -3,6 +3,9 @@ import { TileSource } from '../../lib/image/render';
 import { loadSettings, sanitizeSettings, type Settings } from '../../lib/settings';
 import { getBlob, getCapture, updateCapture } from '../../lib/storage/db';
 import { toMarkdown, toPlainText } from '../../lib/text/words';
+import { exportWords } from '../../annotate/apply';
+import { findSensitive } from '../../annotate/detect';
+import type { EditDoc } from '../../annotate/model';
 
 /** E2E-only hooks (compiled out of production builds). */
 async function b64(blob: Blob): Promise<string> {
@@ -66,6 +69,12 @@ export const previewTestHooks = {
   },
   async text(id: string) {
     const rec = await getCapture(id);
-    return { plain: toPlainText(rec!.words), md: toMarkdown(rec!.words, rec!.title) };
+    const words = exportWords(rec!);
+    return { plain: toPlainText(words), md: toMarkdown(words, rec!.title) };
+  },
+  setEdits: (id: string, edits: EditDoc | undefined) => updateCapture(id, (r) => void (r.edits = edits)),
+  async findSensitive(id: string) {
+    const rec = await getCapture(id);
+    return findSensitive(rec!.words);
   },
 };

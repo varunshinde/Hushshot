@@ -2,6 +2,7 @@ import { render } from 'preact';
 import { App } from '../../pages/preview/App';
 import '../../pages/shared/ui.css';
 import '../../pages/preview/preview.css';
+import '../../annotate/ui/annotate.css';
 
 render(<App />, document.getElementById('app')!);
 

@@ -23,7 +23,7 @@ export default defineConfig({
     const e2e = mode === 'e2e';
     return {
       name: e2e ? 'Hushshot (E2E)' : 'Hushshot',
-      description: 'Private, offline screenshots with searchable PDF export and on-device OCR. No network, no telemetry.',
+      description: 'Private, offline full-page screenshots with annotation, redaction, searchable PDFs and on-device OCR. Nothing is uploaded.',
       minimum_chrome_version: '120',
       permissions: PERMISSIONS,
       ...(OPTIONAL_PERMISSIONS.length ? { optional_permissions: OPTIONAL_PERMISSIONS } : {}),

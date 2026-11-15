@@ -116,6 +116,34 @@ test('write README screenshots', async ({ ext }) => {
   save('select-text.png', await preview.screenshot());
 
 
+  // The annotation editor: a highlight box, an arrow, a numbered step, a callout and a pixelated redaction.
+  await preview.waitForTimeout(3500); // let the "Copied" message from the last step fade
+  await preview.getByRole('button', { name: 'Move' }).click();
+  await preview.locator('.viewport').evaluate((el) => (el.scrollTop = 0));
+  await preview.waitForTimeout(300);
+  await preview.getByRole('button', { name: /^Annotate/ }).click();
+  await preview.waitForTimeout(300);
+  const at = async (key: string, x0: number, y0: number, x1: number, y1: number) => {
+    const c = (await preview.locator('.canvas').boundingBox())!;
+    await preview.keyboard.press(key);
+    await preview.mouse.move(c.x + x0, c.y + y0);
+    await preview.mouse.down();
+    await preview.mouse.move(c.x + x1, c.y + y1, { steps: 8 });
+    await preview.mouse.up();
+  };
+  const h1 = await demo.page.locator('h1').evaluate((el) => { const b = el.getBoundingClientRect(); return { x: b.left + scrollX, y: b.top + scrollY, w: b.width, h: b.height }; });
+  const by = await demo.page.locator('.byline').evaluate((el) => { const b = el.getBoundingClientRect(); return { x: b.left + scrollX, y: b.top + scrollY, w: b.width, h: b.height }; });
+  const zz = (await preview.locator('.canvas').boundingBox())!.width / rec.width;
+  const k = s * zz;
+  await at('r', (h1.x - 10) * k, (h1.y - 8) * k, (h1.x + h1.w + 10) * k, (h1.y + h1.h + 8) * k);
+  await at('a', (h1.x + h1.w + 160) * k, (h1.y + 130) * k, (h1.x + h1.w + 20) * k, (h1.y + h1.h / 2) * k);
+  await at('b', (by.x - 4) * k, (by.y - 3) * k, (by.x + by.w * 0.55) * k, (by.y + by.h + 3) * k);
+  await preview.keyboard.press('v');
+  await preview.mouse.click((await preview.locator('.canvas').boundingBox())!.x + 4, (await preview.locator('.canvas').boundingBox())!.y + 4);
+  await preview.waitForTimeout(500);
+  save('annotate.png', await preview.screenshot());
+  await (await ext.hooks()).evaluate((id) => (globalThis as any).__lcPreviewTest.setEdits(id, undefined), cap.id!);
+
   const options = await ext.context.newPage();
   await options.setViewportSize({ width: 960, height: 900 });
   await options.goto(`chrome-extension://${ext.extId}/options.html`);

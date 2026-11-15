@@ -1,4 +1,6 @@
-import { readPixels, renderArea, rowEnergyFrom, type TileSource } from '../image/render';
+import { exportWords, renderEdited } from '../../annotate/apply';
+import { composes, renderComposed } from '../../edition';
+import { readPixels, rowEnergyFrom, type TileSource } from '../image/render';
 import { computeSplits, fitCutsToCapacity, paginate, segmentsFromCuts, type Segment } from '../image/split';
 import { fitLayout, pageForSegment, type FitLayout, type PdfImage, type PdfPageInput } from '../pdf/build';
 import type { Settings } from '../settings';
@@ -109,10 +111,12 @@ export async function exportImages(
   onProgress?: (p: number) => void,
 ): Promise<ExportedFile[]> {
   const out: ExportedFile[] = [];
-  const total = plan.segments.length;
+  // Background, rotation or resize make one composed picture instead of parts.
+  const one = composes(rec);
+  const total = one ? 1 : plan.segments.length;
   const date = new Date(rec.createdAt);
   for (let i = 0; i < total; i++) {
-    const canvas = await renderArea(tiles, rec.placements, segmentRect(plan.area, plan.segments[i]));
+    const canvas = one ? await renderComposed(tiles, rec, plan.area) : await renderEdited(tiles, rec, segmentRect(plan.area, plan.segments[i]));
     let blob: Blob;
     if (format === 'png') {
       const px = readPixels(canvas);
@@ -148,7 +152,7 @@ export async function exportPdf(
   const n = plan.segments.length;
   for (let i = 0; i < n; i++) {
     const rect = segmentRect(plan.area, plan.segments[i]);
-    const canvas = await renderArea(tiles, rec.placements, rect);
+    const canvas = await renderEdited(tiles, rec, rect);
     let image: PdfImage;
     if (s.pdfSmaller) {
       const jpg = await canvas.convertToBlob({ type: 'image/jpeg', quality: s.lossyQuality });
@@ -160,7 +164,8 @@ export async function exportPdf(
     }
     pages.push({
       image,
-      words: wordsForArea(rec.words, rect),
+      // Words under a redaction never reach the PDF's text layer.
+      words: wordsForArea(exportWords(rec), rect),
       ...pageForSegment(canvas.width, canvas.height, layout, doc),
       ...(s.pdfStamp ? { footer: pdfFooter(rec, i + 1, n) } : {}),
     });
