@@ -14,7 +14,9 @@ Upload the same zip that's attached to the GitHub release, so both are byte-for-
 **Description:**
 
 ```
-Capture entire web pages in pixel-sharp quality, and keep every screenshot on your own computer.
+Capture entire web pages in pixel-sharp quality, mark them up, hide private details, and keep every screenshot on your own computer.
+
+New in 0.3.0: a built-in annotation editor with arrows, boxes, text and steps, plus redaction that really removes private details from every download. Free.
 
 Hushshot makes no network requests at all. There's no account, no analytics and no upload. Everything it needs, including the text-recognition model, is inside the extension.
 
@@ -25,17 +27,17 @@ CAPTURE
 • Cookie banners and chat bubbles are left out by default
 • Keyboard shortcuts for every capture mode
 
+MARK UP AND HIDE PRIVATE DETAILS
+• Arrows, boxes, text, numbered steps, callouts, stamps, a pen and a highlighter, with undo for every change
+• Blur, pixelate or black out anything private: the hidden pixels and text are really removed from every download
+• Find private info: spots email addresses, phone and card numbers and API keys for you, on your computer
+
 SAVE AND SHARE
 • Download PNG, JPEG, WebP or PDF in one click; the button remembers your choice
 • PDFs with lossless images, paper size, margins and smart page breaks that avoid cutting through text
 • Searchable PDFs: every word can be found and selected, including words inside images
 • Optional page address, capture date and page numbers at the bottom of each PDF page
 • Copy image or copy text straight to the clipboard
-
-MARK UP AND HIDE PRIVATE DETAILS
-• Arrows, boxes, text, numbered steps, callouts, stamps, a pen and a highlighter, with undo for every change
-• Blur, pixelate or black out anything private: the hidden pixels and text are really removed from every download
-• Find private info: spots email addresses, phone and card numbers and API keys for you, on your computer
 
 CROP, ZOOM AND TEXT
 • Crop with handles, and every download uses just that area
