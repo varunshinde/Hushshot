@@ -137,3 +137,9 @@ footer.site .grow { flex: 1; }
   .perm li { grid-template-columns: 1fr; gap: 2px; }
   section.band { padding: 52px 0; }
 }
+
+/* Spacing helpers (the site has no inline styles, so its Content Security Policy can forbid them). */
+.gap-top { margin-top: 26px; }
+.gap-top-sm { margin-top: 18px; }
+.gap-top-xs { margin-top: 6px; }
+.flush { margin: 0; }

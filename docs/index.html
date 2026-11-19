@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hushshot: private full-page screenshots for Chrome</title>
 <meta name="description" content="Capture whole web pages in sharp 2× to 4× quality. Save as PNG or a searchable PDF, crop, and copy text, even from images. Free, no account, no uploads.">
@@ -111,7 +112,7 @@
         <img src="images/annotate.png" width="1440" height="900" alt="The annotation editor: a red box around the headline, an arrow pointing at it and a pixelated byline" loading="lazy">
       </div>
 
-      <div class="grid" style="margin-top:26px">
+      <div class="grid gap-top">
         <div class="card"><h3>PDF pages that fit</h3><p>A4, Letter or Legal, every page the same width, breaks between lines of text, never through them.</p></div>
         <div class="card"><h3>Page address and date</h3><p>Optionally print where and when a page was captured at the bottom of every PDF page.</p></div>
         <div class="card"><h3>Area and element</h3><p>Drag a rectangle, or click a part of the page and use the arrow keys to widen or narrow it.</p></div>
@@ -124,7 +125,7 @@
 
   <section class="band" id="privacy">
     <div class="wrap privacy">
-      <div class="head prose" style="margin:0">
+      <div class="head prose flush">
         <span class="eyebrow">Privacy</span>
         <h2>Private by design, and tested to stay that way</h2>
         <p class="muted">Hushshot makes no network requests. There's no account, no analytics and no upload, and everything it needs, including the text-recognition model, is inside the extension.</p>
@@ -180,7 +181,7 @@
             <li>Pin it: click the puzzle-piece icon in the toolbar, then the pin next to Hushshot.</li>
             <li>Updates arrive automatically.</li>
           </ol>
-          <h3 style="margin-top:18px">From the download</h3>
+          <h3 class="gap-top-sm">From the download</h3>
           <ol>
             <li>Download <a href="https://github.com/varunshinde/Hushshot/releases/latest/download/Hushshot.zip">Hushshot.zip</a> (always the latest version) and unzip it.</li>
             <li>Open <code>chrome://extensions</code> and turn on <b>Developer mode</b> (top right).</li>
@@ -195,7 +196,7 @@
             <li>Clone the <a href="https://github.com/varunshinde/Hushshot">repository</a> and run <code>pnpm install</code> then <code>pnpm build</code>.</li>
             <li>Load the <code>dist/chrome-mv3</code> folder with <b>Load unpacked</b> as on the left.</li>
           </ol>
-          <p class="muted" style="margin-top:6px">Each release lists a SHA-256 checksum, so you can check the download matches.</p>
+          <p class="muted gap-top-xs">Each release lists a SHA-256 checksum, so you can check the download matches.</p>
         </div>
       </div>
     </div>
